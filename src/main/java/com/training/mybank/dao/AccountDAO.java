@@ -20,17 +20,18 @@ public class AccountDAO {
 
     public Account getAccountById(int accountId) throws SQLException {
         String sql = "SELECT * FROM accounts WHERE account_id = ?";
-        try (Connection conn = DatabaseConfig.getConnection();
+        try (Connection conn = DatabaseConfig.getConnection(); 
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
             pstmt.setInt(1, accountId);
             try (ResultSet rs = pstmt.executeQuery()) {
                 if (rs.next()) {
-                    return new Account(
+                    Account account = new Account(
                             rs.getInt("account_id"),
                             rs.getString("user_id"),
                             rs.getDouble("balance")
                     );
+                    return account;
                 }
             }
         }

@@ -2,7 +2,7 @@
 -- Passwords are in plain text to match your current UserDAO login logic
 INSERT INTO users (user_id, password) VALUES
 ('user1', 'password1'),
-('user2', 'pass2ord2'),
+('user2', 'password2'),
 ('user3', 'password3');
 
 -- 2. Create Accounts for these users

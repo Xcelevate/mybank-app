@@ -1,5 +1,6 @@
-package com.training.mybank;
+package com.training.mybank.service;
 
+import com.training.mybank.DatabaseConfig;
 import com.training.mybank.dao.AccountDAO;
 import com.training.mybank.dao.TransactionDAO;
 import com.training.mybank.dao.UserDAO;
@@ -73,7 +74,8 @@ public class BankingService {
         validateOwnership(accountId);
 
         try (Connection conn = DatabaseConfig.getConnection()) {
-            double currentBalance = accountDAO.getAccountById(accountId).balance();
+            Account account = accountDAO.getAccountById(accountId);
+            double currentBalance = account.balance();
             if (currentBalance < amount) throw new RuntimeException("Insufficient funds.");
 
             accountDAO.updateBalance(conn, accountId, -amount);
