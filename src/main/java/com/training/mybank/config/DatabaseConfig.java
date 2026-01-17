@@ -1,4 +1,4 @@
-package com.training.mybank;
+package com.training.mybank.config;
 
 import java.sql.Connection;
 import java.sql.DriverManager;

@@ -1,6 +1,6 @@
 package com.training.mybank.service;
 
-import com.training.mybank.DatabaseConfig;
+import com.training.mybank.config.DatabaseConfig;
 import com.training.mybank.dao.AccountDAO;
 import com.training.mybank.dao.TransactionDAO;
 import com.training.mybank.dao.UserDAO;

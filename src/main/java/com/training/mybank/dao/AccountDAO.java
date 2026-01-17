@@ -1,6 +1,6 @@
 package com.training.mybank.dao;
 
-import com.training.mybank.DatabaseConfig;
+import com.training.mybank.config.DatabaseConfig;
 import com.training.mybank.model.Account;
 
 import java.sql.*;
