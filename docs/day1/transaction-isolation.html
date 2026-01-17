@@ -1,0 +1,80 @@
+Transaction isolation levels control how concurrent transactions see and affect each other’s data, trading off consistency vs performance. Standard DBMSs and JDBC define four main levels: READ UNCOMMITTED, READ COMMITTED, REPEATABLE READ, and SERIALIZABLE.[1][2][3][4]
+
+## Key anomalies they control
+
+The levels are defined in terms of which anomalies they allow or prevent.
+
+- **Dirty read**: A transaction reads data another transaction has written but not yet committed; if the writer rolls back, the reader saw data that never really existed.[6][5]
+- **Non‑repeatable read**: A transaction reads the same row twice and sees different committed values because another transaction updated it in between.[3][6]
+- **Phantom read**: A transaction re‑executes a query with a predicate (e.g. `salary > 50000`) and sees new or missing rows because another transaction inserted or deleted rows that match the predicate.[6][3]
+
+Table (logical behavior):[7][3]
+
+| Isolation level      | Dirty reads | Non‑repeatable reads | Phantom reads |
+|----------------------|------------|----------------------|---------------|
+| READ UNCOMMITTED     | Allowed    | Allowed              | Allowed       |
+| READ COMMITTED       | Prevented  | Allowed              | Allowed*      |
+| REPEATABLE READ      | Prevented  | Prevented            | Typically allowed** |
+| SERIALIZABLE         | Prevented  | Prevented            | Prevented     |
+
+\* Some engines handle phantoms differently; PostgreSQL allows phantoms only at READ COMMITTED.
+\** PostgreSQL’s REPEATABLE READ also prevents phantoms using MVCC snapshots.
+
+## READ UNCOMMITTED (lowest isolation)
+
+- Transactions can read uncommitted changes from others, so **dirty reads** are possible.[3]
+- Because you can see uncommitted data that might later be rolled back, non‑repeatable reads and phantoms are also possible.[3]
+- Very few production systems actually implement this as “true” dirty reads; many map it internally to READ COMMITTED.[9][10]
+- In JDBC, this corresponds to `Connection.TRANSACTION_READ_UNCOMMITTED`.[4]
+
+Use only for read‑mostly, low‑value analytics where absolute correctness does not matter and engine truly supports it; even then, it is rarely recommended.
+
+## READ COMMITTED (common default)
+
+- A query sees only data committed **before the statement starts**; uncommitted changes from other transactions are invisible, so **dirty reads are prevented**.
+- However, each statement in the same transaction can see a newer snapshot, so if you re‑read a row, you might see updated committed data: **non‑repeatable reads are possible**.
+- Range queries can see new or missing rows added/removed by other committed transactions between two reads, so **phantom reads are possible**.
+- This is the default in many systems (e.g., PostgreSQL, SQL Server, Oracle uses a variant), and in JDBC it is `Connection.TRANSACTION_READ_COMMITTED`.
+
+This level balances consistency and concurrency and is usually the right default for OLTP applications.[2][8]
+
+## REPEATABLE READ (stronger snapshots)
+
+- Guarantees that if a transaction reads a row, subsequent reads of that same row will see the **same values** for the duration of the transaction: **no non‑repeatable reads**.
+- Still, standard SQL allows **phantom reads**: a repeated range query may see new rows inserted by others that match the search condition.
+- PostgreSQL and some MVCC systems go further: REPEATABLE READ uses a single consistent snapshot for the whole transaction, so even phantoms are effectively prevented (you never see rows that were committed after your first query).[1][8]
+- JDBC constant: `Connection.TRANSACTION_REPEATABLE_READ`.
+
+Use when a transaction must see a stable view of existing rows (e.g., reporting on a fixed dataset during one transaction) but can tolerate possible phantoms depending on the database engine.[12][2]
+
+## SERIALIZABLE (strongest, but expensive)
+
+- Conceptually guarantees that all concurrent transactions behave as if they ran **one after another** in some serial order.
+- Prevents **dirty reads, non‑repeatable reads, and phantom reads**.
+- Implementations:
+- Locking (traditional): uses stronger locks; more blocking and deadlocks.
+- Serializable Snapshot Isolation (e.g., PostgreSQL): uses MVCC plus conflict tracking; may abort transactions that create dangerous patterns, so callers must be ready to retry.[7][1]
+- JDBC constant: `Connection.TRANSACTION_SERIALIZABLE`.[4]
+
+Use for financial transfers, complex consistency‑critical business rules, or when correctness outweighs throughput, and implement retry logic for aborted transactions.[1][12]
+
+## JDBC and setting isolation levels
+
+JDBC exposes these levels via constants on `java.sql.Connection`:[2][4]
+
+- `TRANSACTION_NONE` – database does not support transactions at all.
+- `TRANSACTION_READ_UNCOMMITTED`
+- `TRANSACTION_READ_COMMITTED`
+- `TRANSACTION_REPEATABLE_READ`
+- `TRANSACTION_SERIALIZABLE`
+
+Set the level per connection or per transaction:
+
+```java
+con.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
+con.setAutoCommit(false);
+// perform work
+con.commit();
+```
+
+This API lets each application choose the lowest isolation level that still prevents the anomalies it cannot tolerate, preserving performance while maintaining necessary consistency.

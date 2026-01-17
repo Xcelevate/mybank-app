@@ -1,0 +1,784 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JDBC Training Presentation</title>
+    <style>
+        :root {
+            --font-family-display: Arial, sans-serif;
+            --font-weight-display: 600;
+            --font-family-content: Arial, sans-serif;
+            --font-weight-content: 400;
+            --font-size-content: 16px;
+            --line-height-content: 1.4;
+        }
+
+        body.theme-dark {
+            --color-bg-base: #0f172a;
+            --color-bg-elevated: #020617;
+            --color-bg-surface: #1e293b;
+            --color-bg-muted: #334155;
+            --color-text-primary: #f1f5f9;
+            --color-text-secondary: #cbd5e1;
+            --color-text-muted: #94a3b8;
+            --color-text-accent: #38bdf8;
+            --color-primary: #38bdf8;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-family-content);
+            font-weight: var(--font-weight-content);
+            font-size: var(--font-size-content);
+            line-height: var(--line-height-content);
+            overflow-x: hidden;
+        }
+
+        .slide {
+            width: 960px;
+            height: 540px;
+            margin: 0 auto 20px;
+            display: flex;
+            flex-shrink: 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .row { flex-direction: row; }
+        .col { flex-direction: column; }
+        .center {
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+        .items-center { align-items: center; }
+        .items-start { align-items: flex-start; }
+        .fill-width { flex: 1; }
+
+        .gap-sm { gap: 0.5rem; }
+        .gap-md { gap: 1rem; }
+        .gap-lg { gap: 1.5rem; }
+        .gap-xl { gap: 2rem; }
+
+        .p-4 { padding: 1rem; }
+        .p-6 { padding: 1.5rem; }
+        .p-8 { padding: 2rem; }
+        .p-12 { padding: 3rem; }
+        .p-16 { padding: 4rem; }
+
+        .mb-2 { margin-bottom: 0.5rem; }
+        .mb-4 { margin-bottom: 1rem; }
+        .mb-6 { margin-bottom: 1.5rem; }
+        .mb-8 { margin-bottom: 2rem; }
+        .mb-12 { margin-bottom: 3rem; }
+
+        .mt-2 { margin-top: 0.5rem; }
+        .mt-4 { margin-top: 1rem; }
+        .mt-6 { margin-top: 1.5rem; }
+        .mt-8 { margin-top: 2rem; }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-family: var(--font-family-display);
+            font-weight: var(--font-weight-display);
+            line-height: 1.2;
+            margin: 0;
+        }
+
+        h1 { font-size: 3rem; }
+        h2 { font-size: 2.25rem; }
+        h3 { font-size: 1.75rem; }
+        h4 { font-size: 1.5rem; }
+        h5 { font-size: 1.25rem; }
+
+        .text-6xl { font-size: 3.75rem; }
+        .text-5xl { font-size: 3rem; }
+        .text-4xl { font-size: 2.25rem; }
+        .text-3xl { font-size: 1.875rem; }
+        .text-2xl { font-size: 1.5rem; }
+        .text-xl { font-size: 1.25rem; }
+        .text-lg { font-size: 1.125rem; }
+        .text-base { font-size: 1rem; }
+        .text-sm { font-size: 0.875rem; }
+
+        .font-bold { font-weight: 700; }
+        .font-semibold { font-weight: 600; }
+
+        .text-center { text-align: center; }
+        .text-left { text-align: left; }
+
+        ul, ol {
+            margin-left: 2rem;
+            line-height: 1.8;
+        }
+
+        ul li { list-style: disc; }
+        ol li { list-style: decimal; }
+
+        li { margin-bottom: 0.75rem; }
+        li:last-child { margin-bottom: 0; }
+
+        .code-block {
+            background-color: #1a1f2e;
+            color: #e0e0e0;
+            padding: 1rem;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.85rem;
+            overflow-x: auto;
+            border-left: 4px solid #38bdf8;
+            line-height: 1.5;
+        }
+
+        .card-rect {
+            padding: 1.5rem;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
+
+        .two-col {
+            display: flex;
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .two-col > div {
+            flex: 1;
+        }
+    </style>
+</head>
+<body class="theme-dark">
+
+  <!-- Slide 1: Title Slide -->
+  <section class="slide p-16 col center" style="background-color: #020617; color: #f1f5f9;">
+    <h1 class="text-6xl mb-4" style="color: #38bdf8;">JDBC Masterclass</h1>
+    <p class="text-2xl mb-12" style="color: #cbd5e1;">Java Database Connectivity</p>
+    <p class="text-lg" style="color: #94a3b8;">Complete Guide to Database Programming in Java</p>
+    <p class="text-sm mt-8" style="color: #94a3b8;">4-Hour Training Session • 40+ Slides</p>
+  </section>
+
+  <!-- Slide 2: What is JDBC? -->
+  <section class="slide p-16 col" style="background-color: #0f172a; color: #f1f5f9;">
+    <h2 class="mb-6" style="color: #38bdf8;">What is JDBC?</h2>
+    <ul class="text-lg" style="color: #cbd5e1;">
+      <li><strong style="color: #38bdf8;">Java Database Connectivity</strong> - Standard Java API for database access</li>
+      <li>Provides a set of Java classes and interfaces for database interaction</li>
+      <li>Database-independent connectivity to relational databases</li>
+      <li>Part of Java standard library (java.sql and javax.sql packages)</li>
+      <li>Uses JDBC Drivers to communicate with different databases</li>
+    </ul>
+  </section>
+
+  <!-- Slide 3: Why JDBC? -->
+  <section class="slide p-16 col" style="background-color: #0f172a; color: #f1f5f9;">
+    <h2 class="mb-6" style="color: #38bdf8;">Why JDBC?</h2>
+    <ul class="text-lg" style="color: #cbd5e1;">
+      <li>Write once, use with any relational database (driver pluggable)</li>
+      <li>Standardized API for all Java developers</li>
+      <li>Low-level API for fine-grained control over database operations</li>
+      <li>Foundation for higher-level frameworks (Hibernate, JPA, Spring Data)</li>
+      <li>Essential for understanding database connectivity in Java</li>
+      <li>Supports complex transactions and batch operations</li>
+    </ul>
+  </section>
+
+  <!-- Slide 4: JDBC Architecture Overview -->
+  <section class="slide p-16 col center" style="background-color: #0f172a; color: #f1f5f9;">
+    <h2 class="mb-8" style="color: #38bdf8;">JDBC Architecture</h2>
+    <div class="two-col">
+      <div style="background-color: #1e293b; color: #f1f5f9; padding: 1.5rem; box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);">
+        <h4 style="color: #38bdf8; margin-bottom: 0.5rem;">Application Layer</h4>
+        <p style="color: #cbd5e1; font-size: 0.95rem;">Java Applications and JDBC API</p>
+      </div>
+      <div style="background-color: #1e293b; color: #f1f5f9; padding: 1.5rem; box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);">
+        <h4 style="color: #38bdf8; margin-bottom: 0.5rem;">Driver Layer</h4>
+        <p style="color: #cbd5e1; font-size: 0.95rem;">JDBC Drivers & Data Sources</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Slide 5: JDBC Components -->
+  <section class="slide p-16 col" style="background-color: #0f172a; color: #f1f5f9;">
+    <h2 class="mb-6" style="color: #38bdf8;">Four Main JDBC Components</h2>
+    <ul class="text-lg" style="color: #cbd5e1;">
+      <li><strong style="color: #38bdf8;">JDBC API</strong> - Java interfaces and classes (java.sql package)</li>
+      <li><strong style="color: #38bdf8;">JDBC Driver Manager</strong> - Manages database drivers and connections</li>
+      <li><strong style="color: #38bdf8;">JDBC Test Suite</strong> - Ensures compliance with JDBC standards</li>
+      <li><strong style="color: #38bdf8;">JDBC Drivers</strong> - Type 1, 2, 3, 4 driver implementations</li>
+    </ul>
+  </section>
+
+  <!-- Slide 6: JDBC Driver Types -->
+  <section class="slide p-16 col" style="background-color: #0f172a; color: #f1f5f9;">
+    <h2 class="mb-6" style="color: #38bdf8;">JDBC Driver Types</h2>
+    <ul class="text-lg" style="color: #cbd5e1;">
+      <li><strong style="color: #38bdf8;">Type 1: JDBC-ODBC Bridge</strong> - Uses ODBC (legacy, deprecated)</li>
+      <li><strong style="color: #38bdf8;">Type 2: Native API</strong> - Partially written in native code</li>
+      <li><strong style="color: #38bdf8;">Type 3: Network Protocol</strong> - Pure Java, middleware-based</li>
+      <li><strong style="color: #38bdf8;">Type 4: Thin Driver</strong> - Pure Java, direct database connection (RECOMMENDED)</li>
+    </ul>
+  </section>
+
+  <!-- Slide 7: Two-Tier Architecture -->
+  <section class="slide p-16 col" style="background-color: #0f172a; color: #f1f5f9;">
+    <h2 class="mb-4" style="color: #38bdf8;">Two-Tier Architecture</h2>
+    <p class="text-lg mb-6" style="color: #cbd5e1;">Java Application ↔ JDBC Driver ↔ Database</p>
+    <ul class="text-lg" style="color: #cbd5e1;">
+      <li>Direct communication between application and database</li>
+      <li>User commands sent directly to database</li>
+      <li>Results returned directly to application</li>
+      <li>Suitable for client-side applications and desktop software</li>
+    </ul>
+  </section>
+
+  <!-- Slide 8: Three-Tier Architecture -->
+  <section class="slide p-16 col" style="background-color: #0f172a; color: #f1f5f9;">
+    <h2 class="mb-4" style="color: #38bdf8;">Three-Tier Architecture</h2>
+    <p class="text-lg mb-6" style="color: #cbd5e1;">Client ↔ Middle Tier ↔ Database</p>
+    <ul class="text-lg" style="color: #cbd5e1;">
+      <li>Client-side application, middle-tier server, backend database</li>
+      <li>Middle tier handles business logic and database interactions</li>
+      <li>Suitable for web applications and enterprise systems</li>
+      <li>Better scalability and security</li>
+    </ul>
+  </section>
+
+  <!-- Slide 9: JDBC Key Interfaces -->
+  <section class="slide p-16 col" style="background-color: #0f172a; color: #f1f5f9;">
+    <h2 class="mb-6" style="color: #38bdf8;">Core JDBC Interfaces</h2>
+    <ul class="text-lg" style="color: #cbd5e1;">
+      <li><strong style="color: #38bdf8;">DriverManager</strong> - Manages JDBC drivers and creates connections</li>
+      <li><strong style="color: #38bdf8;">Connection</strong> - Represents a database connection</li>
+      <li><strong style="color: #38bdf8;">Statement</strong> - Execute SQL queries and updates</li>
+      <li><strong style="color: #38bdf8;">PreparedStatement</strong> - Precompiled SQL with parameters</li>
+      <li><strong style="color: #38bdf8;">CallableStatement</strong> - Execute stored procedures</li>
+      <li><strong style="color: #38bdf8;">ResultSet</strong> - Retrieve query results row by row</li>
+    </ul>
+  </section>
+
+  <!-- Slide 10: Loading JDBC Driver -->
+  <section class="slide p-16 col" style="background-color: #0f172a; color: #f1f5f9;">
+    <h2 class="mb-6" style="color: #38bdf8;">Loading JDBC Driver</h2>
+    <div class="code-block">
+Class.forName("com.mysql.cj.jdbc.Driver");
+    </div>
+    <p class="text-lg mt-6" style="color: #cbd5e1;">For different databases:</p>
+    <ul class="text-base" style="color: #cbd5e1;">
+      <li>MySQL: <code>com.mysql.cj.jdbc.Driver</code></li>
+      <li>PostgreSQL: <code>org.postgresql.Driver</code></li>
+      <li>Oracle: <code>oracle.jdbc.driver.OracleDriver</code></li>
+      <li>SQL Server: <code>com.microsoft.sqlserver.jdbc.SQLServerDriver</code></li>
+    </ul>
+  </section>
+
+  <!-- Slide 11: Creating Database Connection -->
+  <section class="slide p-16 col" style="background-color: #0f172a; color: #f1f5f9;">
+    <h2 class="mb-6" style="color: #38bdf8;">Creating Database Connection</h2>
+    <div class="code-block">
+String url = "jdbc:mysql://localhost:3306/mydb";
+String user = "root";
+String password = "password";
+
+Connection con = DriverManager.getConnection(url, user, password);
+    </div>
+  </section>
+
+  <!-- Slide 12: Statement Interface -->
+  <section class="slide p-16 col" style="background-color: #0f172a; color: #f1f5f9;">
+    <h2 class="mb-6" style="color: #38bdf8;">Statement Interface (Basic)</h2>
+    <ul class="text-lg" style="color: #cbd5e1;">
+      <li>Execute static SQL statements</li>
+      <li>Vulnerable to SQL injection</li>
+      <li>Slower for repeated executions</li>
+      <li>Use for simple, one-time queries</li>
+    </ul>
+  </section>
+
+  <!-- Slide 13: Statement Usage Example -->
+  <section class="slide p-16 col" style="background-color: #0f172a; color: #f1f5f9;">
+    <h2 class="mb-4" style="color: #38bdf8;">Statement Usage</h2>
+    <div class="code-block">
+Statement stmt = con.createStatement();
+String sql = "SELECT * FROM employees WHERE emp_id = 101";
+ResultSet rs = stmt.executeQuery(sql);
+
+while(rs.next()) {
+    System.out.println(rs.getString("name"));
+}
+rs.close();
+stmt.close();
+    </div>
+  </section>
+
+  <!-- Slide 14: PreparedStatement Interface -->
+  <section class="slide p-16 col" style="background-color: #0f172a; color: #f1f5f9;">
+    <h2 class="mb-6" style="color: #38bdf8;">PreparedStatement Interface</h2>
+    <ul class="text-lg" style="color: #cbd5e1;">
+      <li>Precompiled SQL statements with parameters</li>
+      <li>Uses placeholders (?) for dynamic values</li>
+      <li>Prevents SQL injection attacks</li>
+      <li>Better performance for repeated executions</li>
+      <li><strong style="color: #38bdf8;">RECOMMENDED</strong> over Statement</li>
+    </ul>
+  </section>
+
+  <!-- Slide 15: PreparedStatement Example -->
+  <section class="slide p-16 col" style="background-color: #0f172a; color: #f1f5f9;">
+    <h2 class="mb-4" style="color: #38bdf8;">PreparedStatement Usage</h2>
+    <div class="code-block">
+String sql = "SELECT * FROM employees WHERE emp_id = ?";
+PreparedStatement pstmt = con.prepareStatement(sql);
+pstmt.setInt(1, 101);
+ResultSet rs = pstmt.executeQuery();
+
+while(rs.next()) {
+    System.out.println(rs.getString("name"));
+}
+    </div>
+  </section>
+
+  <!-- Slide 16: CallableStatement Interface -->
+  <section class="slide p-16 col" style="background-color: #0f172a; color: #f1f5f9;">
+    <h2 class="mb-6" style="color: #38bdf8;">CallableStatement Interface</h2>
+    <ul class="text-lg" style="color: #cbd5e1;">
+      <li>Execute stored procedures in the database</li>
+      <li>Supports IN, OUT, and INOUT parameters</li>
+      <li>Can return ResultSet or single values</li>
+      <li>Better performance for complex database logic</li>
+    </ul>
+  </section>
+
+  <!-- Slide 17: Stored Procedure Example -->
+  <section class="slide p-16 col" style="background-color: #0f172a; color: #f1f5f9;">
+    <h2 class="mb-4" style="color: #38bdf8;">Sample Stored Procedure</h2>
+    <div class="code-block">
+CREATE PROCEDURE get_employee_salary(
+    IN emp_id INT,
+    OUT emp_salary DOUBLE
+)
+BEGIN
+    SELECT salary INTO emp_salary
+    FROM employees
+    WHERE emp_id = emp_id;
+END;
+    </div>
+  </section>
+
+  <!-- Slide 18: CallableStatement Example -->
+  <section class="slide p-16 col" style="background-color: #0f172a; color: #f1f5f9;">
+    <h2 class="mb-4" style="color: #38bdf8;">CallableStatement Usage</h2>
+    <div class="code-block">
+String sql = "{call get_employee_salary(?, ?)}";
+CallableStatement cstmt = con.prepareCall(sql);
+cstmt.setInt(1, 101);
+cstmt.registerOutParameter(2, Types.DOUBLE);
+cstmt.execute();
+
+double salary = cstmt.getDouble(2);
+System.out.println("Salary: " + salary);
+cstmt.close();
+    </div>
+  </section>
+
+  <!-- Slide 19: ResultSet Interface -->
+  <section class="slide p-16 col" style="background-color: #0f172a; color: #f1f5f9;">
+    <h2 class="mb-6" style="color: #38bdf8;">ResultSet Interface</h2>
+    <ul class="text-lg" style="color: #cbd5e1;">
+      <li>Represents query result set</li>
+      <li>Contains metadata about columns</li>
+      <li>Cursor moves forward by default (TYPE_FORWARD_ONLY)</li>
+      <li>Can retrieve data by column index or name</li>
+      <li>Must close ResultSet explicitly</li>
+    </ul>
+  </section>
+
+  <!-- Slide 20: ResultSet Retrieval Methods -->
+  <section class="slide p-16 col" style="background-color: #0f172a; color: #f1f5f9;">
+    <h2 class="mb-6" style="color: #38bdf8;">ResultSet Data Retrieval</h2>
+    <ul class="text-lg" style="color: #cbd5e1;">
+      <li><code style="color: #38bdf8;">getString(int/String)</code> - Get String value</li>
+      <li><code style="color: #38bdf8;">getInt(int/String)</code> - Get Integer value</li>
+      <li><code style="color: #38bdf8;">getDouble(int/String)</code> - Get Double value</li>
+      <li><code style="color: #38bdf8;">getDate(int/String)</code> - Get Date value</li>
+      <li><code style="color: #38bdf8;">getBoolean(int/String)</code> - Get Boolean value</li>
+    </ul>
+  </section>
+
+  <!-- Slide 21: SELECT Statement (Query) -->
+  <section class="slide p-16 col" style="background-color: #0f172a; color: #f1f5f9;">
+    <h2 class="mb-4" style="color: #38bdf8;">SELECT Statement</h2>
+    <div class="code-block">
+String sql = "SELECT * FROM employees WHERE salary > ?";
+PreparedStatement pstmt = con.prepareStatement(sql);
+pstmt.setDouble(1, 50000);
+ResultSet rs = pstmt.executeQuery();
+
+while(rs.next()) {
+    int id = rs.getInt("emp_id");
+    String name = rs.getString("name");
+    double salary = rs.getDouble("salary");
+}
+rs.close();
+pstmt.close();
+    </div>
+  </section>
+
+  <!-- Slide 22: INSERT Statement (Create) -->
+  <section class="slide p-16 col" style="background-color: #0f172a; color: #f1f5f9;">
+    <h2 class="mb-4" style="color: #38bdf8;">INSERT Statement</h2>
+    <div class="code-block">
+String sql = "INSERT INTO employees (name, salary) VALUES (?, ?)";
+PreparedStatement pstmt = con.prepareStatement(sql);
+pstmt.setString(1, "John Doe");
+pstmt.setDouble(2, 75000);
+
+int rows = pstmt.executeUpdate();
+System.out.println(rows + " row(s) inserted");
+pstmt.close();
+    </div>
+  </section>
+
+  <!-- Slide 23: UPDATE Statement -->
+  <section class="slide p-16 col" style="background-color: #0f172a; color: #f1f5f9;">
+    <h2 class="mb-4" style="color: #38bdf8;">UPDATE Statement</h2>
+    <div class="code-block">
+String sql = "UPDATE employees SET salary = ? WHERE emp_id = ?";
+PreparedStatement pstmt = con.prepareStatement(sql);
+pstmt.setDouble(1, 80000);
+pstmt.setInt(2, 101);
+
+int rows = pstmt.executeUpdate();
+System.out.println(rows + " row(s) updated");
+pstmt.close();
+    </div>
+  </section>
+
+  <!-- Slide 24: DELETE Statement -->
+  <section class="slide p-16 col" style="background-color: #0f172a; color: #f1f5f9;">
+    <h2 class="mb-4" style="color: #38bdf8;">DELETE Statement</h2>
+    <div class="code-block">
+String sql = "DELETE FROM employees WHERE emp_id = ?";
+PreparedStatement pstmt = con.prepareStatement(sql);
+pstmt.setInt(1, 101);
+
+int rows = pstmt.executeUpdate();
+System.out.println(rows + " row(s) deleted");
+pstmt.close();
+    </div>
+  </section>
+
+  <!-- Slide 25: CRUD Operations Summary -->
+  <section class="slide p-16 col" style="background-color: #0f172a; color: #f1f5f9;">
+    <h2 class="mb-6" style="color: #38bdf8;">CRUD Operations</h2>
+    <ul class="text-lg" style="color: #cbd5e1;">
+      <li><strong style="color: #38bdf8;">CREATE</strong> - INSERT statement, uses executeUpdate()</li>
+      <li><strong style="color: #38bdf8;">READ</strong> - SELECT statement, uses executeQuery()</li>
+      <li><strong style="color: #38bdf8;">UPDATE</strong> - UPDATE statement, uses executeUpdate()</li>
+      <li><strong style="color: #38bdf8;">DELETE</strong> - DELETE statement, uses executeUpdate()</li>
+    </ul>
+  </section>
+
+  <!-- Slide 26: Exception Handling -->
+  <section class="slide p-16 col" style="background-color: #0f172a; color: #f1f5f9;">
+    <h2 class="mb-6" style="color: #38bdf8;">Exception Handling in JDBC</h2>
+    <ul class="text-lg" style="color: #cbd5e1;">
+      <li>JDBC operations throw <code>SQLException</code></li>
+      <li>Always use try-catch for JDBC code</li>
+      <li>Always close resources in finally block</li>
+      <li>Use try-with-resources (Java 7+) for auto-closing</li>
+    </ul>
+  </section>
+
+  <!-- Slide 27: Try-Catch-Finally Example -->
+  <section class="slide p-16 col" style="background-color: #0f172a; color: #f1f5f9;">
+    <h2 class="mb-4" style="color: #38bdf8;">Try-Catch-Finally Pattern</h2>
+    <div class="code-block">
+try {
+    pstmt = con.prepareStatement(sql);
+    rs = pstmt.executeQuery();
+} catch(SQLException e) {
+    e.printStackTrace();
+} finally {
+    if(rs != null) rs.close();
+    if(pstmt != null) pstmt.close();
+    if(con != null) con.close();
+}
+    </div>
+  </section>
+
+  <!-- Slide 28: Try-With-Resources Example -->
+  <section class="slide p-16 col" style="background-color: #0f172a; color: #f1f5f9;">
+    <h2 class="mb-4" style="color: #38bdf8;">Try-With-Resources (Java 7+)</h2>
+    <div class="code-block">
+try (PreparedStatement pstmt = con.prepareStatement(sql)) {
+    pstmt.setInt(1, 101);
+    ResultSet rs = pstmt.executeQuery();
+    while(rs.next()) {
+        System.out.println(rs.getString("name"));
+    }
+} catch(SQLException e) {
+    e.printStackTrace();
+}
+    </div>
+  </section>
+
+  <!-- Slide 29: Transaction Basics -->
+  <section class="slide p-16 col" style="background-color: #0f172a; color: #f1f5f9;">
+    <h2 class="mb-6" style="color: #38bdf8;">Transaction Management</h2>
+    <ul class="text-lg" style="color: #cbd5e1;">
+      <li><strong style="color: #38bdf8;">Transaction</strong> - Atomic unit of multiple database operations</li>
+      <li>All-or-nothing criteria: success or rollback</li>
+      <li>By default, autocommit is enabled (each statement is a transaction)</li>
+      <li>Supports ACID properties (Atomicity, Consistency, Isolation, Durability)</li>
+    </ul>
+  </section>
+
+  <!-- Slide 30: Disabling AutoCommit -->
+  <section class="slide p-16 col" style="background-color: #0f172a; color: #f1f5f9;">
+    <h2 class="mb-4" style="color: #38bdf8;">Disabling AutoCommit</h2>
+    <div class="code-block">
+con.setAutoCommit(false);  // Disable autocommit
+
+// Execute multiple operations
+pstmt1.executeUpdate();
+pstmt2.executeUpdate();
+pstmt3.executeUpdate();
+
+con.commit();  // Commit all or
+con.rollback();  // Rollback all
+    </div>
+  </section>
+
+  <!-- Slide 31: Commit and Rollback -->
+  <section class="slide p-16 col" style="background-color: #0f172a; color: #f1f5f9;">
+    <h2 class="mb-6" style="color: #38bdf8;">Commit and Rollback</h2>
+    <ul class="text-lg" style="color: #cbd5e1;">
+      <li><strong style="color: #38bdf8;">commit()</strong> - Persist all changes to database</li>
+      <li><strong style="color: #38bdf8;">rollback()</strong> - Discard all changes (undo)</li>
+      <li>Called explicitly when autocommit is disabled</li>
+      <li>Always rollback on exception for data consistency</li>
+    </ul>
+  </section>
+
+  <!-- Slide 32: Transaction Example (Fund Transfer) -->
+  <section class="slide p-16 col" style="background-color: #0f172a; color: #f1f5f9;">
+    <h2 class="mb-4" style="color: #38bdf8;">Transaction Example</h2>
+    <div class="code-block">
+try {
+    con.setAutoCommit(false);
+
+    pstmt1.setDouble(1, 5000);
+    pstmt1.setInt(2, 102);
+    pstmt1.executeUpdate();  // Deposit
+
+    pstmt2.setDouble(1, 5000);
+    pstmt2.setInt(2, 101);
+    pstmt2.executeUpdate();  // Withdraw
+
+    con.commit();
+} catch(SQLException e) {
+    con.rollback();
+}
+    </div>
+  </section>
+
+  <!-- Slide 33: Transaction Isolation Levels -->
+  <section class="slide p-16 col" style="background-color: #0f172a; color: #f1f5f9;">
+    <h2 class="mb-6" style="color: #38bdf8;">Transaction Isolation Levels</h2>
+    <ul class="text-lg" style="color: #cbd5e1;">
+      <li><strong style="color: #38bdf8;">READ_UNCOMMITTED</strong> - Lowest isolation, dirty reads possible</li>
+      <li><strong style="color: #38bdf8;">READ_COMMITTED</strong> - Default, prevents dirty reads</li>
+      <li><strong style="color: #38bdf8;">REPEATABLE_READ</strong> - Prevents non-repeatable reads</li>
+      <li><strong style="color: #38bdf8;">SERIALIZABLE</strong> - Highest isolation, phantom reads prevented</li>
+    </ul>
+  </section>
+
+  <!-- Slide 34: Setting Isolation Level -->
+  <section class="slide p-16 col" style="background-color: #0f172a; color: #f1f5f9;">
+    <h2 class="mb-4" style="color: #38bdf8;">Setting Isolation Level</h2>
+    <div class="code-block">
+con.setTransactionIsolation(
+    Connection.TRANSACTION_READ_COMMITTED
+);
+
+// Or
+con.setTransactionIsolation(2);
+    </div>
+  </section>
+
+  <!-- Slide 35: Batch Operations -->
+  <section class="slide p-16 col" style="background-color: #0f172a; color: #f1f5f9;">
+    <h2 class="mb-6" style="color: #38bdf8;">Batch Operations</h2>
+    <ul class="text-lg" style="color: #cbd5e1;">
+      <li>Execute multiple SQL statements as a batch</li>
+      <li>Better performance than executing one by one</li>
+      <li>Reduces network round trips to database</li>
+      <li>Use <code style="color: #38bdf8;">addBatch()</code> and <code style="color: #38bdf8;">executeBatch()</code></li>
+    </ul>
+  </section>
+
+  <!-- Slide 36: Batch Example -->
+  <section class="slide p-16 col" style="background-color: #0f172a; color: #f1f5f9;">
+    <h2 class="mb-4" style="color: #38bdf8;">Batch Operations Example</h2>
+    <div class="code-block">
+String sql = "INSERT INTO employees (name, salary) VALUES (?, ?)";
+PreparedStatement pstmt = con.prepareStatement(sql);
+
+for(int i = 0; i &lt; 100; i++) {
+    pstmt.setString(1, "Employee" + i);
+    pstmt.setDouble(2, 50000);
+    pstmt.addBatch();
+}
+
+int[] results = pstmt.executeBatch();
+System.out.println("Batch executed");
+pstmt.close();
+    </div>
+  </section>
+
+  <!-- Slide 37: MetaData - DatabaseMetaData -->
+  <section class="slide p-16 col" style="background-color: #0f172a; color: #f1f5f9;">
+    <h2 class="mb-6" style="color: #38bdf8;">DatabaseMetaData</h2>
+    <ul class="text-lg" style="color: #cbd5e1;">
+      <li>Provides information about the database</li>
+      <li>Get table names, column info, primary keys, etc.</li>
+      <li>Obtain via <code style="color: #38bdf8;">con.getMetaData()</code></li>
+      <li>Useful for dynamic query building and table exploration</li>
+    </ul>
+  </section>
+
+  <!-- Slide 38: DatabaseMetaData Example -->
+  <section class="slide p-16 col" style="background-color: #0f172a; color: #f1f5f9;">
+    <h2 class="mb-4" style="color: #38bdf8;">DatabaseMetaData Usage</h2>
+    <div class="code-block">
+DatabaseMetaData dbmd = con.getMetaData();
+System.out.println("DB: " + dbmd.getDatabaseProductName());
+System.out.println("Version: " +
+    dbmd.getDatabaseProductVersion());
+
+ResultSet tables = dbmd.getTables(null, null, "%",
+    new String[]{"TABLE"});
+while(tables.next()) {
+    System.out.println(tables.getString("TABLE_NAME"));
+}
+    </div>
+  </section>
+
+  <!-- Slide 39: Connection Pooling -->
+  <section class="slide p-16 col" style="background-color: #0f172a; color: #f1f5f9;">
+    <h2 class="mb-6" style="color: #38bdf8;">Connection Pooling</h2>
+    <ul class="text-lg" style="color: #cbd5e1;">
+      <li>Reuse database connections instead of creating new ones</li>
+      <li>Improves performance significantly</li>
+      <li>Use libraries like HikariCP, C3P0, DBCP</li>
+      <li>Manage pool size, timeout, max connections</li>
+      <li>Essential for production applications</li>
+    </ul>
+  </section>
+
+  <!-- Slide 40: Connection Pooling Benefit -->
+  <section class="slide p-16 col" style="background-color: #0f172a; color: #f1f5f9;">
+    <h2 class="mb-6" style="color: #38bdf8;">Why Connection Pooling?</h2>
+    <ul class="text-lg" style="color: #cbd5e1;">
+      <li>Creating connections is expensive (network I/O)</li>
+      <li>Pooling reduces connection creation overhead</li>
+      <li>Connections are borrowed and returned to pool</li>
+      <li>Multiple applications can share pool efficiently</li>
+      <li>Can set limits to prevent resource exhaustion</li>
+    </ul>
+  </section>
+
+  <!-- Slide 41: Best Practices Summary (Part 1) -->
+  <section class="slide p-16 col" style="background-color: #0f172a; color: #f1f5f9;">
+    <h2 class="mb-6" style="color: #38bdf8;">Best Practices (1/2)</h2>
+    <ul class="text-lg" style="color: #cbd5e1;">
+      <li>Always use <strong style="color: #38bdf8;">PreparedStatement</strong> over Statement</li>
+      <li>Always use <strong style="color: #38bdf8;">try-with-resources</strong> for auto-closing</li>
+      <li>Handle <strong style="color: #38bdf8;">SQLException</strong> explicitly</li>
+      <li>Disable <strong style="color: #38bdf8;">autocommit</strong> for multi-step transactions</li>
+      <li>Always <strong style="color: #38bdf8;">rollback</strong> on exception</li>
+    </ul>
+  </section>
+
+  <!-- Slide 42: Best Practices Summary (Part 2) -->
+  <section class="slide p-16 col" style="background-color: #0f172a; color: #f1f5f9;">
+    <h2 class="mb-6" style="color: #38bdf8;">Best Practices (2/2)</h2>
+    <ul class="text-lg" style="color: #cbd5e1;">
+      <li>Use <strong style="color: #38bdf8;">batch operations</strong> for bulk inserts</li>
+      <li>Use <strong style="color: #38bdf8;">connection pooling</strong> in production</li>
+      <li>Prevent <strong style="color: #38bdf8;">SQL injection</strong> with parameterized queries</li>
+      <li>Set appropriate <strong style="color: #38bdf8;">isolation levels</strong> for concurrency</li>
+      <li>Keep transactions <strong style="color: #38bdf8;">short and focused</strong></li>
+    </ul>
+  </section>
+
+  <!-- Slide 43: Common Mistakes to Avoid -->
+  <section class="slide p-16 col" style="background-color: #0f172a; color: #f1f5f9;">
+    <h2 class="mb-6" style="color: #38bdf8;">Common Mistakes</h2>
+    <ul class="text-lg" style="color: #cbd5e1;">
+      <li>❌ Not closing ResultSet, Statement, Connection</li>
+      <li>❌ Using String concatenation for SQL (SQL injection)</li>
+      <li>❌ Not handling SQLException</li>
+      <li>❌ Creating new connections for each operation</li>
+      <li>❌ Long-running transactions blocking other queries</li>
+    </ul>
+  </section>
+
+  <!-- Slide 44: JDBC vs ORM Frameworks -->
+  <section class="slide p-16 col" style="background-color: #0f172a; color: #f1f5f9;">
+    <h2 class="mb-6" style="color: #38bdf8;">JDBC vs ORM Frameworks</h2>
+    <div class="two-col">
+      <div style="background-color: #1e293b; color: #f1f5f9; padding: 1.5rem; box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);">
+        <h4 style="color: #38bdf8; margin-bottom: 0.5rem;">JDBC</h4>
+        <p style="color: #cbd5e1; font-size: 0.9rem;">Low-level, manual control, more code</p>
+      </div>
+      <div style="background-color: #1e293b; color: #f1f5f9; padding: 1.5rem; box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);">
+        <h4 style="color: #38bdf8; margin-bottom: 0.5rem;">Hibernate/JPA</h4>
+        <p style="color: #cbd5e1; font-size: 0.9rem;">High-level abstraction, less boilerplate</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Slide 45: Real-World Example: Employee Management -->
+  <section class="slide p-16 col" style="background-color: #0f172a; color: #f1f5f9;">
+    <h2 class="mb-4" style="color: #38bdf8;">Real-World: Employee Management</h2>
+    <div class="code-block">
+class EmployeeDAO {
+    public void addEmployee(String name, double salary)
+            throws SQLException {
+        String sql = "INSERT INTO employees (name, salary) VALUES (?, ?)";
+        try (PreparedStatement pstmt = con.prepareStatement(sql)) {
+            pstmt.setString(1, name);
+            pstmt.setDouble(2, salary);
+            pstmt.executeUpdate();
+        }
+    }
+}
+    </div>
+  </section>
+
+  <!-- Slide 46: Summary - Key Takeaways -->
+  <section class="slide p-16 col center" style="background-color: #020617; color: #f1f5f9;">
+    <h2 class="mb-8" style="color: #38bdf8;">Key Takeaways</h2>
+    <ul class="text-lg" style="color: #cbd5e1; text-align: left;">
+      <li>JDBC is foundation for Java database programming</li>
+      <li>Use PreparedStatement for security and performance</li>
+      <li>Always manage connections and resources properly</li>
+      <li>Transactions ensure data consistency and integrity</li>
+      <li>Connection pooling is essential for production apps</li>
+    </ul>
+  </section>
+
+  <!-- Slide 47: Thank You Slide -->
+  <section class="slide p-16 col center" style="background-color: #020617; color: #f1f5f9;">
+    <h2 class="text-5xl mb-6" style="color: #38bdf8;">Thank You!</h2>
+    <p class="text-xl" style="color: #cbd5e1;">Questions?</p>
+    <p class="text-sm mt-8" style="color: #94a3b8;">JDBC Training Session Complete</p>
+  </section>
+
+</body>
+</html>

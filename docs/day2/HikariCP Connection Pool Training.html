@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HikariCP Connection Pool Training</title>
+    <style>
+        :root {
+            --font-family-display: Arial, sans-serif;
+            --font-weight-display: 600;
+            --font-family-content: Arial, sans-serif;
+            --font-weight-content: 400;
+            --font-size-content: 16px;
+            --line-height-content: 1.4;
+        }
+
+        body.theme-light {
+            --color-bg-base: #ffffff;
+            --color-bg-elevated: #f8fafc;
+            --color-bg-surface: #f1f5f9;
+            --color-bg-muted: #e2e8f0;
+            --color-text-primary: #0f172a;
+            --color-text-secondary: #475569;
+            --color-text-muted: #64748b;
+            --color-text-accent: #0284c7;
+            --color-primary: #0284c7;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-family-content);
+            font-weight: var(--font-weight-content);
+            font-size: var(--font-size-content);
+            line-height: var(--line-height-content);
+            overflow-x: hidden;
+        }
+
+        .slide {
+            width: 960px;
+            height: 540px;
+            margin: 0 auto 20px;
+            display: flex;
+            flex-shrink: 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .row { flex-direction: row; }
+        .col { flex-direction: column; }
+        .center {
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+        .items-center { align-items: center; }
+        .items-start { align-items: flex-start; }
+        .fill-width { flex: 1; }
+
+        .gap-sm { gap: 0.5rem; }
+        .gap-md { gap: 1rem; }
+        .gap-lg { gap: 1.5rem; }
+        .gap-xl { gap: 2rem; }
+
+        .p-4 { padding: 1rem; }
+        .p-6 { padding: 1.5rem; }
+        .p-8 { padding: 2rem; }
+        .p-12 { padding: 3rem; }
+        .p-16 { padding: 4rem; }
+
+        .mb-2 { margin-bottom: 0.5rem; }
+        .mb-4 { margin-bottom: 1rem; }
+        .mb-6 { margin-bottom: 1.5rem; }
+        .mb-8 { margin-bottom: 2rem; }
+        .mb-12 { margin-bottom: 3rem; }
+
+        .mt-2 { margin-top: 0.5rem; }
+        .mt-4 { margin-top: 1rem; }
+        .mt-6 { margin-top: 1.5rem; }
+        .mt-8 { margin-top: 2rem; }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-family: var(--font-family-display);
+            font-weight: var(--font-weight-display);
+            line-height: 1.2;
+            margin: 0;
+        }
+
+        h1 { font-size: 3rem; }
+        h2 { font-size: 2.25rem; }
+        h3 { font-size: 1.75rem; }
+        h4 { font-size: 1.5rem; }
+        h5 { font-size: 1.25rem; }
+
+        .text-6xl { font-size: 3.75rem; }
+        .text-5xl { font-size: 3rem; }
+        .text-4xl { font-size: 2.25rem; }
+        .text-3xl { font-size: 1.875rem; }
+        .text-2xl { font-size: 1.5rem; }
+        .text-xl { font-size: 1.25rem; }
+        .text-lg { font-size: 1.125rem; }
+        .text-base { font-size: 1rem; }
+        .text-sm { font-size: 0.875rem; }
+
+        .font-bold { font-weight: 700; }
+        .font-semibold { font-weight: 600; }
+
+        .text-center { text-align: center; }
+        .text-left { text-align: left; }
+
+        ul, ol {
+            margin-left: 2rem;
+            line-height: 1.8;
+        }
+
+        ul li { list-style: disc; }
+        ol li { list-style: decimal; }
+
+        li { margin-bottom: 0.75rem; }
+        li:last-child { margin-bottom: 0; }
+
+        .code-block {
+            background-color: #1a1f2e;
+            color: #e0e0e0;
+            padding: 1rem;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.8rem;
+            overflow-x: auto;
+            overflow-y: auto;
+            border-left: 4px solid #0284c7;
+            line-height: 1.4;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            max-height: 300px;
+        }
+
+        .card-rect {
+            padding: 1.5rem;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+        }
+
+        .two-col {
+            display: flex;
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .two-col > div {
+            flex: 1;
+        }
+    </style>
+</head>
+<body class="theme-light">
+
+  <!-- Slide 1: Title Slide -->
+  <section class="slide p-16 col center" style="background-color: #0284c7; color: #ffffff;">
+    <h1 class="text-6xl mb-4" style="color: #ffffff;">HikariCP Masterclass</h1>
+    <p class="text-2xl mb-12" style="color: #ffffff;">High-Performance JDBC Connection Pool</p>
+    <p class="text-lg" style="color: #ffffff;">Complete Guide to Connection Pooling in Java</p>
+    <p class="text-sm mt-8" style="color: #ffffff;">Training Session • Production Best Practices</p>
+  </section>
+
+  <!-- Slide 2: What is HikariCP? -->
+  <section class="slide p-16 col" style="background-color: #ffffff; color: #0f172a;">
+    <h2 class="mb-6" style="color: #0284c7;">What is HikariCP?</h2>
+    <ul class="text-lg" style="color: #475569;">
+      <li><strong style="color: #0284c7;">HikariCP</strong> - Ultra-reliable, high-performance JDBC connection pool</li>
+      <li>Lightweight and fast (smallest footprint)</li>
+      <li>Zero-overhead production-ready library</li>
+      <li>Excellent for microservices and cloud applications</li>
+      <li>Default connection pool for Spring Boot applications</li>
+      <li>Apache 2.0 licensed, open source</li>
+    </ul>
+  </section>
+
+  <!-- Slide 3: Why Connection Pooling? -->
+  <section class="slide p-16 col" style="background-color: #ffffff; color: #0f172a;">
+    <h2 class="mb-6" style="color: #0284c7;">Why Connection Pooling?</h2>
+    <ul class="text-lg" style="color: #475569;">
+      <li>Creating DB connections is expensive (network I/O, authentication)</li>
+      <li>Pooling reuses connections instead of creating new ones</li>
+      <li>Dramatically improves application performance</li>
+      <li>Reduces database server load and memory usage</li>
+      <li>Prevents connection exhaustion and resource leaks</li>
+      <li>Better transaction management and isolation</li>
+    </ul>
+  </section>
+
+  <!-- Slide 4: HikariCP vs Other Pools -->
+  <section class="slide p-16 col" style="background-color: #ffffff; color: #0f172a;">
+    <h2 class="mb-6" style="color: #0284c7;">HikariCP Advantages</h2>
+    <ul class="text-lg" style="color: #475569;">
+      <li><strong style="color: #0284c7;">Fastest</strong> - Micro-optimized for speed</li>
+      <li><strong style="color: #0284c7;">Reliable</strong> - Battle-tested in production</li>
+      <li><strong style="color: #0284c7;">Lightweight</strong> - Only 128 KB JAR file</li>
+      <li><strong style="color: #0284c7;">Simple</strong> - Minimal configuration needed</li>
+      <li><strong style="color: #0284c7;">Well-maintained</strong> - Active development</li>
+    </ul>
+  </section>
+
+  <!-- Slide 5: HikariCP Architecture -->
+  <section class="slide p-16 col center" style="background-color: #ffffff; color: #0f172a;">
+    <h2 class="mb-8" style="color: #0284c7;">HikariCP Architecture</h2>
+    <div class="two-col">
+      <div style="background-color: #f1f5f9; color: #0f172a; padding: 1.5rem; box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);">
+        <h4 style="color: #0284c7; margin-bottom: 0.5rem;">Connection Pool</h4>
+        <p style="color: #475569; font-size: 0.95rem;">Maintains pre-created connections ready to use</p>
+      </div>
+      <div style="background-color: #f1f5f9; color: #0f172a; padding: 1.5rem; box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);">
+        <h4 style="color: #0284c7; margin-bottom: 0.5rem;">Connection Queue</h4>
+        <p style="color: #475569; font-size: 0.95rem;">Queue for borrowing and returning connections</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Slide 6: Key HikariCP Features -->
+  <section class="slide p-16 col" style="background-color: #ffffff; color: #0f172a;">
+    <h2 class="mb-6" style="color: #0284c7;">Key Features</h2>
+    <ul class="text-lg" style="color: #475569;">
+      <li>Connection timeout and validation</li>
+      <li>Automatic connection initialization and cleanup</li>
+      <li>Connection health checks (alive test)</li>
+      <li>Leak detection (connection not returned to pool)</li>
+      <li>Statement cache for prepared statements</li>
+    </ul>
+  </section>
+
+  <!-- Slide 7: Maven Dependency -->
+  <section class="slide p-16 col" style="background-color: #ffffff; color: #0f172a;">
+    <h2 class="mb-4" style="color: #0284c7;">Maven Dependency</h2>
+    <div class="code-block">
+&lt;dependency&gt;
+    &lt;groupId&gt;com.zaxxer&lt;/groupId&gt;
+    &lt;artifactId&gt;HikariCP&lt;/artifactId&gt;
+    &lt;version&gt;5.1.0&lt;/version&gt;
+&lt;/dependency&gt;
+    </div>
+  </section>
+
+  <!-- Slide 8: HikariConfig Properties -->
+  <section class="slide p-16 col" style="background-color: #ffffff; color: #0f172a;">
+    <h2 class="mb-6" style="color: #0284c7;">Essential Configuration</h2>
+    <ul class="text-lg" style="color: #475569;">
+      <li><strong style="color: #0284c7;">maximumPoolSize</strong> - Max connections (default: 10)</li>
+      <li><strong style="color: #0284c7;">minimumIdle</strong> - Min idle connections (default: 10)</li>
+      <li><strong style="color: #0284c7;">connectionTimeout</strong> - Max wait time (default: 30s)</li>
+      <li><strong style="color: #0284c7;">idleTimeout</strong> - Max idle time (default: 10min)</li>
+      <li><strong style="color: #0284c7;">maxLifetime</strong> - Max connection age (default: 30min)</li>
+    </ul>
+  </section>
+
+  <!-- Slide 9: Creating HikariConfig -->
+  <section class="slide p-16 col" style="background-color: #ffffff; color: #0f172a;">
+    <h2 class="mb-4" style="color: #0284c7;">Create HikariConfig</h2>
+    <div class="code-block">
+HikariConfig config = new HikariConfig();
+config.setJdbcUrl("jdbc:mysql://localhost:3306/mydb");
+config.setUsername("root");
+config.setPassword("password");
+config.setMaximumPoolSize(10);
+config.setMinimumIdle(5);
+config.setConnectionTimeout(30000);
+config.setIdleTimeout(600000);
+config.setMaxLifetime(1800000);
+    </div>
+  </section>
+
+  <!-- Slide 10: Creating HikariDataSource -->
+  <section class="slide p-16 col" style="background-color: #ffffff; color: #0f172a;">
+    <h2 class="mb-4" style="color: #0284c7;">Create HikariDataSource</h2>
+    <div class="code-block">
+HikariDataSource dataSource = 
+    new HikariDataSource(config);
+
+// Get connection from pool
+Connection conn = dataSource.getConnection();
+// Use connection...
+
+// Return connection to pool
+conn.close();
+
+// Close pool (application shutdown)
+dataSource.close();
+    </div>
+  </section>
+
+  <!-- Slide 11: Application.properties Configuration -->
+  <section class="slide p-16 col" style="background-color: #ffffff; color: #0f172a;">
+    <h2 class="mb-4" style="color: #0284c7;">Spring Boot Configuration</h2>
+    <div class="code-block">
+# application.properties
+spring.datasource.url=jdbc:mysql://localhost:3306/mydb
+spring.datasource.username=root
+spring.datasource.password=password
+spring.datasource.hikari.maximum-pool-size=10
+spring.datasource.hikari.minimum-idle=5
+spring.datasource.hikari.connection-timeout=30000
+spring.datasource.hikari.idle-timeout=600000
+    </div>
+  </section>
+
+  <!-- Slide 12: Employee Management - Complete DAO -->
+  <section class="slide p-16 col" style="background-color: #ffffff; color: #0f172a;">
+    <h2 class="mb-4" style="color: #0284c7;">DAO with HikariCP Pool</h2>
+    <div class="code-block">
+public class EmployeeDAO {
+    private static HikariDataSource dataSource;
+
+    static {
+        HikariConfig config = new HikariConfig();
+        config.setJdbcUrl("jdbc:mysql://localhost:3306/mydb");
+        config.setUsername("root");
+        config.setPassword("password");
+        config.setMaximumPoolSize(10);
+        dataSource = new HikariDataSource(config);
+    }
+
+    public Connection getConnection() throws SQLException {
+        return dataSource.getConnection();
+    }
+}
+    </div>
+  </section>
+
+  <!-- Slide 13: Adding Employee Method -->
+  <section class="slide p-16 col" style="background-color: #ffffff; color: #0f172a;">
+    <h2 class="mb-4" style="color: #0284c7;">Add Employee (INSERT)</h2>
+    <div class="code-block">
+public void addEmployee(String name, double salary) 
+        throws SQLException {
+    String sql = "INSERT INTO employees (name, salary) " +
+                 "VALUES (?, ?)";
+    
+    try (Connection conn = getConnection();
+         PreparedStatement pstmt = 
+            conn.prepareStatement(sql)) {
+        pstmt.setString(1, name);
+        pstmt.setDouble(2, salary);
+        pstmt.executeUpdate();
+        System.out.println("Employee added successfully");
+    } catch(SQLException e) {
+        throw new SQLException("Insert failed", e);
+    }
+}
+    </div>
+  </section>
+
+  <!-- Slide 14: Getting All Employees Method -->
+  <section class="slide p-16 col" style="background-color: #ffffff; color: #0f172a;">
+    <h2 class="mb-4" style="color: #0284c7;">Get All Employees (SELECT)</h2>
+    <div class="code-block">
+public List&lt;Employee&gt; getAllEmployees() 
+        throws SQLException {
+    List&lt;Employee&gt; employees = new ArrayList&lt;&gt;();
+    String sql = "SELECT * FROM employees";
+    
+    try (Connection conn = getConnection();
+         PreparedStatement pstmt = 
+            conn.prepareStatement(sql);
+         ResultSet rs = pstmt.executeQuery()) {
+        while(rs.next()) {
+            Employee emp = new Employee(
+                rs.getInt("emp_id"),
+                rs.getString("name"),
+                rs.getDouble("salary")
+            );
+            employees.add(emp);
+        }
+    }
+    return employees;
+}
+    </div>
+  </section>
+
+  <!-- Slide 15: Update Employee Method -->
+  <section class="slide p-16 col" style="background-color: #ffffff; color: #0f172a;">
+    <h2 class="mb-4" style="color: #0284c7;">Update Employee (UPDATE)</h2>
+    <div class="code-block">
+public void updateEmployee(int empId, double newSalary) 
+        throws SQLException {
+    String sql = "UPDATE employees SET salary = ? " +
+                 "WHERE emp_id = ?";
+    
+    try (Connection conn = getConnection();
+         PreparedStatement pstmt = 
+            conn.prepareStatement(sql)) {
+        pstmt.setDouble(1, newSalary);
+        pstmt.setInt(2, empId);
+        int rows = pstmt.executeUpdate();
+        System.out.println(rows + " row(s) updated");
+    }
+}
+    </div>
+  </section>
+
+  <!-- Slide 16: Delete Employee Method -->
+  <section class="slide p-16 col" style="background-color: #ffffff; color: #0f172a;">
+    <h2 class="mb-4" style="color: #0284c7;">Delete Employee (DELETE)</h2>
+    <div class="code-block">
+public void deleteEmployee(int empId) 
+        throws SQLException {
+    String sql = "DELETE FROM employees WHERE emp_id = ?";
+    
+    try (Connection conn = getConnection();
+         PreparedStatement pstmt = 
+            conn.prepareStatement(sql)) {
+        pstmt.setInt(1, empId);
+        int rows = pstmt.executeUpdate();
+        System.out.println(rows + " row(s) deleted");
+    }
+}
+    </div>
+  </section>
+
+  <!-- Slide 17: Batch Operations with Pool -->
+  <section class="slide p-16 col" style="background-color: #ffffff; color: #0f172a;">
+    <h2 class="mb-4" style="color: #0284c7;">Bulk Insert with Batch</h2>
+    <div class="code-block">
+public void bulkAddEmployees(List&lt;Employee&gt; employees) 
+        throws SQLException {
+    String sql = "INSERT INTO employees (name, salary) " +
+                 "VALUES (?, ?)";
+    
+    try (Connection conn = getConnection();
+         PreparedStatement pstmt = 
+            conn.prepareStatement(sql)) {
+        for(Employee emp : employees) {
+            pstmt.setString(1, emp.getName());
+            pstmt.setDouble(2, emp.getSalary());
+            pstmt.addBatch();
+        }
+        pstmt.executeBatch();
+        System.out.println("Batch insert completed");
+    }
+}
+    </div>
+  </section>
+
+  <!-- Slide 18: Transaction with Pool -->
+  <section class="slide p-16 col" style="background-color: #ffffff; color: #0f172a;">
+    <h2 class="mb-4" style="color: #0284c7;">Transaction Handling</h2>
+    <div class="code-block">
+public void transferBonus(int fromId, int toId, 
+        double amount) throws SQLException {
+    Connection conn = getConnection();
+    try {
+        conn.setAutoCommit(false);
+        
+        deductBonus(conn, fromId, amount);
+        creditBonus(conn, toId, amount);
+        
+        conn.commit();
+        System.out.println("Transfer completed");
+    } catch(SQLException e) {
+        conn.rollback();
+        throw e;
+    } finally {
+        conn.close();
+    }
+}
+    </div>
+  </section>
+
+  <!-- Slide 19: Connection Validation -->
+  <section class="slide p-16 col" style="background-color: #ffffff; color: #0f172a;">
+    <h2 class="mb-6" style="color: #0284c7;">Connection Health Checks</h2>
+    <ul class="text-lg" style="color: #475569;">
+      <li><strong style="color: #0284c7;">testOnBorrow</strong> - Validate before giving connection</li>
+      <li><strong style="color: #0284c7;">testOnReturn</strong> - Validate when connection returned</li>
+      <li><strong style="color: #0284c7;">testWhileIdle</strong> - Test idle connections periodically</li>
+      <li><strong style="color: #0284c7;">validationQuery</strong> - SQL to test connection health</li>
+      <li>Default: minimal validation (SELECT 1 for MySQL)</li>
+    </ul>
+  </section>
+
+  <!-- Slide 20: Validation Configuration -->
+  <section class="slide p-16 col" style="background-color: #ffffff; color: #0f172a;">
+    <h2 class="mb-4" style="color: #0284c7;">Configure Validation</h2>
+    <div class="code-block">
+config.setConnectionTestQuery("SELECT 1");
+config.setLeakDetectionThreshold(60000);
+config.setValidationTimeout(5000);
+
+// Spring Boot
+spring.datasource.hikari.connection-test-query=SELECT 1
+spring.datasource.hikari.
+    leak-detection-threshold=60000
+    </div>
+  </section>
+
+  <!-- Slide 21: Leak Detection -->
+  <section class="slide p-16 col" style="background-color: #ffffff; color: #0f172a;">
+    <h2 class="mb-6" style="color: #0284c7;">Leak Detection</h2>
+    <ul class="text-lg" style="color: #475569;">
+      <li>Detects connections not returned to pool</li>
+      <li>Default threshold: 0 (disabled)</li>
+      <li>Set to reasonable value (e.g., 60000ms = 1 minute)</li>
+      <li>Logs warnings about suspicious connection holding</li>
+      <li>Helps identify resource leaks in application</li>
+    </ul>
+  </section>
+
+  <!-- Slide 22: Employee Entity Class -->
+  <section class="slide p-16 col" style="background-color: #ffffff; color: #0f172a;">
+    <h2 class="mb-4" style="color: #0284c7;">Employee Entity</h2>
+    <div class="code-block">
+public class Employee {
+    private int empId;
+    private String name;
+    private double salary;
+
+    public Employee(int empId, String name, 
+            double salary) {
+        this.empId = empId;
+        this.name = name;
+        this.salary = salary;
+    }
+
+    // Getters and Setters
+    public int getEmpId() { return empId; }
+    public String getName() { return name; }
+    public double getSalary() { return salary; }
+}
+    </div>
+  </section>
+
+  <!-- Slide 23: Main Application Usage -->
+  <section class="slide p-16 col" style="background-color: #ffffff; color: #0f172a;">
+    <h2 class="mb-4" style="color: #0284c7;">Application Usage</h2>
+    <div class="code-block">
+public class EmployeeApplication {
+    public static void main(String[] args) 
+            throws SQLException {
+        EmployeeDAO dao = new EmployeeDAO();
+        
+        // Add employees
+        dao.addEmployee("John Doe", 75000);
+        dao.addEmployee("Jane Smith", 80000);
+        
+        // Get all employees
+        List&lt;Employee&gt; employees = 
+            dao.getAllEmployees();
+        employees.forEach(e -&gt; 
+            System.out.println(e.getName())
+        );
+    }
+}
+    </div>
+  </section>
+
+  <!-- Slide 24: Best Practices -->
+  <section class="slide p-16 col" style="background-color: #ffffff; color: #0f172a;">
+    <h2 class="mb-6" style="color: #0284c7;">HikariCP Best Practices</h2>
+    <ul class="text-lg" style="color: #475569;">
+      <li>Create single DataSource (static, shared instance)</li>
+      <li>Use try-with-resources for connection handling</li>
+      <li>Set appropriate pool size for your workload</li>
+      <li>Enable leak detection in development</li>
+      <li>Monitor pool metrics in production</li>
+    </ul>
+  </section>
+
+  <!-- Slide 25: Sizing the Pool -->
+  <section class="slide p-16 col" style="background-color: #ffffff; color: #0f172a;">
+    <h2 class="mb-6" style="color: #0284c7;">Pool Size Calculation</h2>
+    <ul class="text-lg" style="color: #475569;">
+      <li><strong style="color: #0284c7;">Formula:</strong> connections = (core_count × 2) + spare_connections</li>
+      <li>Core count from Runtime.getRuntime().availableProcessors()</li>
+      <li>Typical: 8-10 connections for most applications</li>
+      <li>Too small: connection timeout errors</li>
+      <li>Too large: wastes memory and database resources</li>
+    </ul>
+  </section>
+
+  <!-- Slide 26: Monitoring Pool Metrics -->
+  <section class="slide p-16 col" style="background-color: #ffffff; color: #0f172a;">
+    <h2 class="mb-6" style="color: #0284c7;">Monitor Pool Health</h2>
+    <ul class="text-lg" style="color: #475569;">
+      <li>Total connections in pool</li>
+      <li>Active (in-use) connections</li>
+      <li>Idle connections available</li>
+      <li>Connection wait time</li>
+      <li>Connection creation rate</li>
+    </ul>
+  </section>
+
+  <!-- Slide 27: Common Configuration Issues -->
+  <section class="slide p-16 col" style="background-color: #ffffff; color: #0f172a;">
+    <h2 class="mb-6" style="color: #0284c7;">Common Issues</h2>
+    <ul class="text-lg" style="color: #475569;">
+      <li>❌ Pool size too small → connection timeouts</li>
+      <li>❌ Not closing connections → connection leak</li>
+      <li>❌ Creating multiple DataSources → resource waste</li>
+      <li>❌ Ignoring idle timeout → stale connections</li>
+      <li>❌ Very long maxLifetime → connection death</li>
+    </ul>
+  </section>
+
+  <!-- Slide 28: Timeout Parameters Explained -->
+  <section class="slide p-16 col" style="background-color: #ffffff; color: #0f172a;">
+    <h2 class="mb-4" style="color: #0284c7;">Understanding Timeouts</h2>
+    <div class="code-block">
+// connectionTimeout (30s default)
+// Time to wait for available connection
+
+// idleTimeout (10min default)
+// Max idle time before connection closed
+
+// maxLifetime (30min default)
+// Max age of connection in pool
+
+// validationTimeout (5s default)
+// Time for validation query
+    </div>
+  </section>
+
+  <!-- Slide 29: Production Best Practices -->
+  <section class="slide p-16 col" style="background-color: #ffffff; color: #0f172a;">
+    <h2 class="mb-6" style="color: #0284c7;">Production Best Practices</h2>
+    <ul class="text-lg" style="color: #475569;">
+      <li>✅ Use try-with-resources for resource management</li>
+      <li>✅ Configure proper pool size for workload</li>
+      <li>✅ Enable health checks and validation</li>
+      <li>✅ Set leak detection threshold (e.g., 60s)</li>
+      <li>✅ Keep single static DataSource instance</li>
+    </ul>
+  </section>
+
+  <!-- Slide 29 (renumbered): Comparison - With vs Without Pooling -->
+  <section class="slide p-16 col center" style="background-color: #ffffff; color: #0f172a;">
+    <h2 class="mb-8" style="color: #0284c7;">Performance Impact</h2>
+    <div class="two-col">
+      <div style="background-color: #f1f5f9; color: #0f172a; padding: 1.5rem; box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);">
+        <h4 style="color: #0284c7; margin-bottom: 0.5rem;">Without Pool</h4>
+        <p style="color: #475569; font-size: 0.9rem;">100-200ms per connection</p>
+      </div>
+      <div style="background-color: #f1f5f9; color: #0f172a; padding: 1.5rem; box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);">
+        <h4 style="color: #0284c7; margin-bottom: 0.5rem;">With HikariCP</h4>
+        <p style="color: #475569; font-size: 0.9rem;">0-1ms per connection (reused)</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Slide 30: Summary - Key Takeaways -->
+  <section class="slide p-16 col center" style="background-color: #0284c7; color: #ffffff;">
+    <h2 class="mb-8" style="color: #ffffff;">Key Takeaways</h2>
+    <ul class="text-lg" style="color: #ffffff; text-align: left;">
+      <li>HikariCP is fastest, most reliable connection pool</li>
+      <li>Essential for production Java applications</li>
+      <li>Default choice for Spring Boot projects</li>
+      <li>Proper configuration improves performance dramatically</li>
+      <li>Monitor pool health for optimal operation</li>
+    </ul>
+  </section>
+
+  <!-- Slide 31: Thank You Slide -->
+  <section class="slide p-16 col center" style="background-color: #0284c7; color: #ffffff;">
+    <h2 class="text-5xl mb-6" style="color: #ffffff;">Thank You!</h2>
+    <p class="text-xl" style="color: #ffffff;">Questions?</p>
+    <p class="text-sm mt-8" style="color: #ffffff;">HikariCP Training Complete</p>
+  </section>
+
+</body>
+</html>

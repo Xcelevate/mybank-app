@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Java JPA Training Presentation</title>
+    <style>
+        :root {
+            --font-family-display: Arial, sans-serif;
+            --font-weight-display: 600;
+            --font-family-content: Arial, sans-serif;
+            --font-weight-content: 400;
+            --font-size-content: 16px;
+            --line-height-content: 1.4;
+        }
+
+        body.theme-light {
+            --color-bg-base: #ffffff;
+            --color-bg-elevated: #f8fafc;
+            --color-bg-surface: #f1f5f9;
+            --color-bg-muted: #e2e8f0;
+            --color-text-primary: #0f172a;
+            --color-text-secondary: #475569;
+            --color-text-muted: #64748b;
+            --color-text-accent: #0284c7;
+            --color-primary: #0284c7;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-family-content);
+            font-weight: var(--font-weight-content);
+            font-size: var(--font-size-content);
+            line-height: var(--line-height-content);
+            overflow-x: hidden;
+        }
+
+        .slide {
+            width: 960px;
+            height: 540px;
+            margin: 0 auto 20px;
+            display: flex;
+            flex-shrink: 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .row { flex-direction: row; }
+        .col { flex-direction: column; }
+        .center {
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+        .items-center { align-items: center; }
+        .items-start { align-items: flex-start; }
+        .fill-width { flex: 1; }
+
+        .gap-sm { gap: 0.5rem; }
+        .gap-md { gap: 1rem; }
+        .gap-lg { gap: 1.5rem; }
+        .gap-xl { gap: 2rem; }
+
+        .p-4 { padding: 1rem; }
+        .p-6 { padding: 1.5rem; }
+        .p-8 { padding: 2rem; }
+        .p-12 { padding: 3rem; }
+        .p-16 { padding: 4rem; }
+
+        .mb-2 { margin-bottom: 0.5rem; }
+        .mb-4 { margin-bottom: 1rem; }
+        .mb-6 { margin-bottom: 1.5rem; }
+        .mb-8 { margin-bottom: 2rem; }
+        .mb-12 { margin-bottom: 3rem; }
+
+        .mt-2 { margin-top: 0.5rem; }
+        .mt-4 { margin-top: 1rem; }
+        .mt-6 { margin-top: 1.5rem; }
+        .mt-8 { margin-top: 2rem; }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-family: var(--font-family-display);
+            font-weight: var(--font-weight-display);
+            line-height: 1.2;
+            margin: 0;
+        }
+
+        h1 { font-size: 3rem; }
+        h2 { font-size: 2.25rem; }
+        h3 { font-size: 1.75rem; }
+        h4 { font-size: 1.5rem; }
+        h5 { font-size: 1.25rem; }
+
+        .text-6xl { font-size: 3.75rem; }
+        .text-5xl { font-size: 3rem; }
+        .text-4xl { font-size: 2.25rem; }
+        .text-3xl { font-size: 1.875rem; }
+        .text-2xl { font-size: 1.5rem; }
+        .text-xl { font-size: 1.25rem; }
+        .text-lg { font-size: 1.125rem; }
+        .text-base { font-size: 1rem; }
+        .text-sm { font-size: 0.875rem; }
+
+        .font-bold { font-weight: 700; }
+        .font-semibold { font-weight: 600; }
+
+        .text-center { text-align: center; }
+        .text-left { text-align: left; }
+
+        ul, ol {
+            margin-left: 2rem;
+            line-height: 1.8;
+        }
+
+        ul li { list-style: disc; }
+        ol li { list-style: decimal; }
+
+        li { margin-bottom: 0.75rem; }
+        li:last-child { margin-bottom: 0; }
+
+        .code-block {
+            background-color: #1a1f2e;
+            color: #e0e0e0;
+            padding: 1rem;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.75rem;
+            overflow-x: auto;
+            overflow-y: auto;
+            border-left: 4px solid #0284c7;
+            line-height: 1.3;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            max-height: 300px;
+        }
+
+        .card-rect {
+            padding: 1.5rem;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+        }
+
+        .two-col {
+            display: flex;
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .two-col > div {
+            flex: 1;
+        }
+    </style>
+</head>
+<body class="theme-light">
+
+  <!-- Slide 1: Title Slide -->
+  <section class="slide p-16 col center" style="background-color: #0284c7; color: #ffffff;">
+    <h1 class="text-6xl mb-4" style="color: #ffffff;">JPA Masterclass</h1>
+    <p class="text-2xl mb-12" style="color: #ffffff;">Java Persistence API</p>
+    <p class="text-lg" style="color: #ffffff;">Object-Relational Mapping Essentials</p>
+    <p class="text-sm mt-8" style="color: #ffffff;">Training Session • Production Patterns</p>
+  </section>
+
+  <!-- Slide 2: What is JPA? -->
+  <section class="slide p-16 col" style="background-color: #ffffff; color: #0f172a;">
+    <h2 class="mb-6" style="color: #0284c7;">What is JPA?</h2>
+    <ul class="text-lg" style="color: #475569;">
+      <li><strong style="color: #0284c7;">JPA</strong> - Java Persistence API, ORM standard specification</li>
+      <li>Maps Java objects to database tables automatically</li>
+      <li>Eliminates boilerplate JDBC code significantly</li>
+      <li>Database-independent (works with any SQL DB)</li>
+      <li>Uses annotations for configuration (@Entity, @Column, etc.)</li>
+      <li>Most popular: Hibernate, EclipseLink, OpenJPA</li>
+    </ul>
+  </section>
+
+  <!-- Slide 3: JPA vs JDBC -->
+  <section class="slide p-16 col" style="background-color: #ffffff; color: #0f172a;">
+    <h2 class="mb-6" style="color: #0284c7;">JPA vs JDBC</h2>
+    <ul class="text-lg" style="color: #475569;">
+      <li><strong style="color: #0284c7;">JDBC:</strong> Low-level, manual SQL, verbose code</li>
+      <li><strong style="color: #0284c7;">JPA:</strong> High-level, object-oriented, minimal boilerplate</li>
+      <li>JPA abstracts database complexity from developers</li>
+      <li>JPA built on top of JDBC drivers internally</li>
+      <li>JPA provides lazy loading, caching, and relationships</li>
+      <li>JDBC needed when JPA can't do specific queries</li>
+    </ul>
+  </section>
+
+  <!-- Slide 4: JPA Architecture -->
+  <section class="slide p-16 col center" style="background-color: #ffffff; color: #0f172a;">
+    <h2 class="mb-8" style="color: #0284c7;">JPA Architecture</h2>
+    <div class="two-col">
+      <div style="background-color: #f1f5f9; color: #0f172a; padding: 1.5rem; box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);">
+        <h4 style="color: #0284c7; margin-bottom: 0.5rem;">Entity Mapping</h4>
+        <p style="color: #475569; font-size: 0.95rem;">Annotations map objects to tables</p>
+      </div>
+      <div style="background-color: #f1f5f9; color: #0f172a; padding: 1.5rem; box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);">
+        <h4 style="color: #0284c7; margin-bottom: 0.5rem;">Persistence Context</h4>
+        <p style="color: #475569; font-size: 0.95rem;">Tracks entity state changes</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Slide 5: Core JPA Concepts -->
+  <section class="slide p-16 col" style="background-color: #ffffff; color: #0f172a;">
+    <h2 class="mb-6" style="color: #0284c7;">Core JPA Concepts</h2>
+    <ul class="text-lg" style="color: #475569;">
+      <li><strong style="color: #0284c7;">Entity</strong> - POJO mapped to database table</li>
+      <li><strong style="color: #0284c7;">EntityManager</strong> - CRUD operations on entities</li>
+      <li><strong style="color: #0284c7;">Persistence Context</strong> - Cache of managed entities</li>
+      <li><strong style="color: #0284c7;">Transaction</strong> - ACID boundary for changes</li>
+      <li><strong style="color: #0284c7;">JPQL</strong> - SQL-like query language for entities</li>
+    </ul>
+  </section>
+
+  <!-- Slide 6: Entity Annotation -->
+  <section class="slide p-16 col" style="background-color: #ffffff; color: #0f172a;">
+    <h2 class="mb-4" style="color: #0284c7;">Basic Entity Class</h2>
+    <div class="code-block">
+@Entity
+@Table(name = "employees")
+public class Employee {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
+
+    @Column(name = "name", nullable = false)
+    private String name;
+
+    @Column(name = "salary")
+    private double salary;
+    
+    // Getters and Setters
+}
+    </div>
+  </section>
+
+  <!-- Slide 7: Column Annotations -->
+  <section class="slide p-16 col" style="background-color: #ffffff; color: #0f172a;">
+    <h2 class="mb-6" style="color: #0284c7;">Column Annotation Options</h2>
+    <ul class="text-lg" style="color: #475569;">
+      <li><strong style="color: #0284c7;">@Column(name)</strong> - Database column name</li>
+      <li><strong style="color: #0284c7;">nullable=false</strong> - NOT NULL constraint</li>
+      <li><strong style="color: #0284c7;">length=100</strong> - VARCHAR length</li>
+      <li><strong style="color: #0284c7;">unique=true</strong> - UNIQUE constraint</li>
+      <li><strong style="color: #0284c7;">columnDefinition</strong> - Custom SQL type</li>
+    </ul>
+  </section>
+
+  <!-- Slide 8: EntityManager CRUD -->
+  <section class="slide p-16 col" style="background-color: #ffffff; color: #0f172a;">
+    <h2 class="mb-6" style="color: #0284c7;">EntityManager Operations</h2>
+    <ul class="text-lg" style="color: #475569;">
+      <li><strong style="color: #0284c7;">persist()</strong> - INSERT new entity</li>
+      <li><strong style="color: #0284c7;">find()</strong> - SELECT by primary key</li>
+      <li><strong style="color: #0284c7;">merge()</strong> - UPDATE existing entity</li>
+      <li><strong style="color: #0284c7;">remove()</strong> - DELETE entity</li>
+      <li><strong style="color: #0284c7;">flush()</strong> - Write changes immediately</li>
+    </ul>
+  </section>
+
+  <!-- Slide 9: Persist Example -->
+  <section class="slide p-16 col" style="background-color: #ffffff; color: #0f172a;">
+    <h2 class="mb-4" style="color: #0284c7;">Persist (INSERT)</h2>
+    <div class="code-block">
+EntityTransaction tx = em.getTransaction();
+tx.begin();
+
+Employee emp = new Employee();
+emp.setName("John Doe");
+emp.setSalary(75000);
+
+em.persist(emp);  // Insert
+tx.commit();
+
+System.out.println("ID: " + emp.getId());
+    </div>
+  </section>
+
+  <!-- Slide 10: Find Example -->
+  <section class="slide p-16 col" style="background-color: #ffffff; color: #0f172a;">
+    <h2 class="mb-4" style="color: #0284c7;">Find (SELECT)</h2>
+    <div class="code-block">
+// Get by primary key
+Employee emp = em.find(Employee.class, 1);
+
+if(emp != null) {
+    System.out.println("Name: " + emp.getName());
+    System.out.println("Salary: " + emp.getSalary());
+} else {
+    System.out.println("Employee not found");
+}
+    </div>
+  </section>
+
+  <!-- Slide 11: Merge Example -->
+  <section class="slide p-16 col" style="background-color: #ffffff; color: #0f172a;">
+    <h2 class="mb-4" style="color: #0284c7;">Merge (UPDATE)</h2>
+    <div class="code-block">
+EntityTransaction tx = em.getTransaction();
+tx.begin();
+
+Employee emp = em.find(Employee.class, 1);
+emp.setSalary(80000);
+
+em.merge(emp);  // Update
+tx.commit();
+
+System.out.println("Salary updated to: " + 
+    emp.getSalary());
+    </div>
+  </section>
+
+  <!-- Slide 12: Remove Example -->
+  <section class="slide p-16 col" style="background-color: #ffffff; color: #0f172a;">
+    <h2 class="mb-4" style="color: #0284c7;">Remove (DELETE)</h2>
+    <div class="code-block">
+EntityTransaction tx = em.getTransaction();
+tx.begin();
+
+Employee emp = em.find(Employee.class, 1);
+
+if(emp != null) {
+    em.remove(emp);  // Delete
+    tx.commit();
+    System.out.println("Employee deleted");
+}
+    </div>
+  </section>
+
+  <!-- Slide 13: JPQL Queries -->
+  <section class="slide p-16 col" style="background-color: #ffffff; color: #0f172a;">
+    <h2 class="mb-6" style="color: #0284c7;">JPQL Basics</h2>
+    <ul class="text-lg" style="color: #475569;">
+      <li><strong style="color: #0284c7;">JPQL</strong> - SQL-like but operates on entities</li>
+      <li>Uses entity class names, not table names</li>
+      <li>Type-safe (compile time checking)</li>
+      <li>Database-independent query syntax</li>
+      <li>Similar to HQL (Hibernate Query Language)</li>
+    </ul>
+  </section>
+
+  <!-- Slide 14: JPQL Select Query -->
+  <section class="slide p-16 col" style="background-color: #ffffff; color: #0f172a;">
+    <h2 class="mb-4" style="color: #0284c7;">JPQL SELECT Query</h2>
+    <div class="code-block">
+String jpql = "SELECT e FROM Employee e " +
+              "WHERE e.salary > ?1";
+
+Query query = em.createQuery(jpql);
+query.setParameter(1, 50000);
+
+List&lt;Employee&gt; employees = 
+    query.getResultList();
+
+for(Employee emp : employees) {
+    System.out.println(emp.getName());
+}
+    </div>
+  </section>
+
+  <!-- Slide 15: Named Queries -->
+  <section class="slide p-16 col" style="background-color: #ffffff; color: #0f172a;">
+    <h2 class="mb-4" style="color: #0284c7;">Named Queries</h2>
+    <div class="code-block">
+@Entity
+@NamedQuery(name = "Employee.findBySalary",
+    query = "SELECT e FROM Employee e " +
+            "WHERE e.salary > ?1")
+public class Employee {
+    // ... fields
+}
+
+// Usage
+Query query = em.createNamedQuery(
+    "Employee.findBySalary");
+query.setParameter(1, 50000);
+List&lt;Employee&gt; list = query.getResultList();
+    </div>
+  </section>
+
+  <!-- Slide 16: One-to-Many Relationship -->
+  <section class="slide p-16 col" style="background-color: #ffffff; color: #0f172a;">
+    <h2 class="mb-4" style="color: #0284c7;">One-to-Many Mapping</h2>
+    <div class="code-block">
+@Entity
+public class Department {
+    @Id
+    private int id;
+    private String name;
+    
+    @OneToMany(mappedBy = "department")
+    private List&lt;Employee&gt; employees;
+}
+
+@Entity
+public class Employee {
+    @Id
+    private int id;
+    
+    @ManyToOne
+    @JoinColumn(name = "dept_id")
+    private Department department;
+}
+    </div>
+  </section>
+
+  <!-- Slide 17: Many-to-One Relationship -->
+  <section class="slide p-16 col" style="background-color: #ffffff; color: #0f172a;">
+    <h2 class="mb-6" style="color: #0284c7;">Many-to-One</h2>
+    <ul class="text-lg" style="color: #475569;">
+      <li>Multiple employees in one department</li>
+      <li><strong style="color: #0284c7;">@ManyToOne</strong> on owning side</li>
+      <li><strong style="color: #0284c7;">@JoinColumn</strong> specifies foreign key</li>
+      <li>Most common relationship in databases</li>
+      <li>Eager or lazy loading options</li>
+    </ul>
+  </section>
+
+  <!-- Slide 18: Many-to-Many Relationship -->
+  <section class="slide p-16 col" style="background-color: #ffffff; color: #0f172a;">
+    <h2 class="mb-4" style="color: #0284c7;">Many-to-Many Mapping</h2>
+    <div class="code-block">
+@Entity
+public class Student {
+    @Id
+    private int id;
+    
+    @ManyToMany
+    @JoinTable(name = "student_course",
+        joinColumns = @JoinColumn(name = "student_id"),
+        inverseJoinColumns = 
+            @JoinColumn(name = "course_id"))
+    private List&lt;Course&gt; courses;
+}
+
+@Entity
+public class Course {
+    @Id
+    private int id;
+    
+    @ManyToMany(mappedBy = "courses")
+    private List&lt;Student&gt; students;
+}
+    </div>
+  </section>
+
+  <!-- Slide 19: Cascade Types -->
+  <section class="slide p-16 col" style="background-color: #ffffff; color: #0f172a;">
+    <h2 class="mb-6" style="color: #0284c7;">Cascade Operations</h2>
+    <ul class="text-lg" style="color: #475569;">
+      <li><strong style="color: #0284c7;">PERSIST</strong> - Cascade save operation</li>
+      <li><strong style="color: #0284c7;">MERGE</strong> - Cascade update operation</li>
+      <li><strong style="color: #0284c7;">REMOVE</strong> - Cascade delete operation</li>
+      <li><strong style="color: #0284c7;">ALL</strong> - All operations cascade</li>
+      <li>Example: <code>@OneToMany(cascade = CascadeType.ALL)</code></li>
+    </ul>
+  </section>
+
+  <!-- Slide 20: Lazy vs Eager Loading -->
+  <section class="slide p-16 col" style="background-color: #ffffff; color: #0f172a;">
+    <h2 class="mb-6" style="color: #0284c7;">Loading Strategies</h2>
+    <ul class="text-lg" style="color: #475569;">
+      <li><strong style="color: #0284c7;">LAZY</strong> - Load related data when accessed (default)</li>
+      <li><strong style="color: #0284c7;">EAGER</strong> - Load immediately with parent entity</li>
+      <li>Lazy: better performance, risk of LazyInitException</li>
+      <li>Eager: all data loaded upfront, potential N+1 queries</li>
+      <li>Choose based on usage patterns</li>
+    </ul>
+  </section>
+
+  <!-- Slide 21: Fetch Configuration -->
+  <section class="slide p-16 col" style="background-color: #ffffff; color: #0f172a;">
+    <h2 class="mb-4" style="color: #0284c7;">Configure Fetch Type</h2>
+    <div class="code-block">
+@Entity
+public class Department {
+    @Id
+    private int id;
+    
+    // Lazy load employees
+    @OneToMany(mappedBy = "department",
+        fetch = FetchType.LAZY)
+    private List&lt;Employee&gt; employees;
+    
+    // Eager load manager
+    @ManyToOne(fetch = FetchType.EAGER)
+    private Manager manager;
+}
+    </div>
+  </section>
+
+  <!-- Slide 22: Entity Lifecycle -->
+  <section class="slide p-16 col" style="background-color: #ffffff; color: #0f172a;">
+    <h2 class="mb-6" style="color: #0284c7;">Entity States</h2>
+    <ul class="text-lg" style="color: #475569;">
+      <li><strong style="color: #0284c7;">NEW</strong> - Just created, not persisted</li>
+      <li><strong style="color: #0284c7;">MANAGED</strong> - In persistence context</li>
+      <li><strong style="color: #0284c7;">DETACHED</strong> - Removed from context</li>
+      <li><strong style="color: #0284c7;">REMOVED</strong> - Marked for deletion</li>
+      <li>Changes to managed entities auto-sync to DB</li>
+    </ul>
+  </section>
+
+  <!-- Slide 23: Lifecycle Callbacks -->
+  <section class="slide p-16 col" style="background-color: #ffffff; color: #0f172a;">
+    <h2 class="mb-4" style="color: #0284c7;">JPA Callbacks</h2>
+    <div class="code-block">
+@Entity
+public class Employee {
+    @PrePersist
+    private void prePersist() {
+        System.out.println("Before insert");
+    }
+    
+    @PostPersist
+    private void postPersist() {
+        System.out.println("After insert");
+    }
+    
+    @PreUpdate
+    private void preUpdate() { }
+    
+    @PostUpdate
+    private void postUpdate() { }
+}
+    </div>
+  </section>
+
+  <!-- Slide 24: Pagination in JPQL -->
+  <section class="slide p-16 col" style="background-color: #ffffff; color: #0f172a;">
+    <h2 class="mb-4" style="color: #0284c7;">Pagination</h2>
+    <div class="code-block">
+String jpql = "SELECT e FROM Employee e " +
+              "ORDER BY e.id";
+
+Query query = em.createQuery(jpql);
+query.setFirstResult(0);   // Start row
+query.setMaxResults(10);   // Page size
+
+List&lt;Employee&gt; employees = 
+    query.getResultList();
+    </div>
+  </section>
+
+  <!-- Slide 25: Aggregation Functions -->
+  <section class="slide p-16 col" style="background-color: #ffffff; color: #0f172a;">
+    <h2 class="mb-4" style="color: #0284c7;">JPQL Aggregation</h2>
+    <div class="code-block">
+String jpql = "SELECT COUNT(e) FROM Employee e";
+Long count = (Long) em.createQuery(jpql)
+    .getSingleResult();
+
+jpql = "SELECT AVG(e.salary) FROM Employee e";
+Double avgSalary = (Double) 
+    em.createQuery(jpql).getSingleResult();
+
+jpql = "SELECT MAX(e.salary) FROM Employee e";
+Double maxSalary = (Double) 
+    em.createQuery(jpql).getSingleResult();
+    </div>
+  </section>
+
+  <!-- Slide 26: Criteria API -->
+  <section class="slide p-16 col" style="background-color: #ffffff; color: #0f172a;">
+    <h2 class="mb-6" style="color: #0284c7;">Criteria API</h2>
+    <ul class="text-lg" style="color: #475569;">
+      <li>Type-safe alternative to JPQL</li>
+      <li>Programmatic query building</li>
+      <li>Compile-time checking of attributes</li>
+      <li>More flexible for dynamic queries</li>
+      <li>Slightly more verbose than JPQL</li>
+    </ul>
+  </section>
+
+  <!-- Slide 27: Criteria Query Example -->
+  <section class="slide p-16 col" style="background-color: #ffffff; color: #0f172a;">
+    <h2 class="mb-4" style="color: #0284c7;">Criteria API Usage</h2>
+    <div class="code-block">
+CriteriaBuilder cb = em.getCriteriaBuilder();
+CriteriaQuery&lt;Employee&gt; cq = 
+    cb.createQuery(Employee.class);
+Root&lt;Employee&gt; root = cq.from(Employee.class);
+
+cq.select(root).where(
+    cb.gt(root.get("salary"), 50000)
+);
+
+List&lt;Employee&gt; employees = 
+    em.createQuery(cq).getResultList();
+    </div>
+  </section>
+
+  <!-- Slide 28: Transactions in JPA -->
+  <section class="slide p-16 col" style="background-color: #ffffff; color: #0f172a;">
+    <h2 class="mb-6" style="color: #0284c7;">Transaction Management</h2>
+    <ul class="text-lg" style="color: #475569;">
+      <li><strong style="color: #0284c7;">begin()</strong> - Start transaction</li>
+      <li><strong style="color: #0284c7;">commit()</strong> - Save all changes</li>
+      <li><strong style="color: #0284c7;">rollback()</strong> - Undo changes</li>
+      <li>Always wrap modifications in transactions</li>
+      <li>Isolation levels affect concurrency</li>
+    </ul>
+  </section>
+
+  <!-- Slide 29: Best Practices -->
+  <section class="slide p-16 col" style="background-color: #ffffff; color: #0f172a;">
+    <h2 class="mb-6" style="color: #0284c7;">JPA Best Practices</h2>
+    <ul class="text-lg" style="color: #475569;">
+      <li>Use EntityManager judiciously (stateless)</li>
+      <li>Always handle transactions explicitly</li>
+      <li>Avoid LazyInitException with proper fetching</li>
+      <li>Use named queries for reusable JPQL</li>
+      <li>Implement equals() and hashCode() for entities</li>
+    </ul>
+  </section>
+
+  <!-- Slide 30: Common Mistakes to Avoid -->
+  <section class="slide p-16 col" style="background-color: #ffffff; color: #0f172a;">
+    <h2 class="mb-6" style="color: #0284c7;">Common Pitfalls</h2>
+    <ul class="text-lg" style="color: #475569;">
+      <li>❌ Modifying detached entities without merge()</li>
+      <li>❌ Lazy loading outside transaction scope</li>
+      <li>❌ N+1 query problem (loading in loops)</li>
+      <li>❌ Not flushing before queries</li>
+      <li>❌ Forgetting transaction begin/commit</li>
+    </ul>
+  </section>
+
+  <!-- Slide 31: JPA vs Hibernate -->
+  <section class="slide p-16 col center" style="background-color: #ffffff; color: #0f172a;">
+    <h2 class="mb-8" style="color: #0284c7;">JPA vs Hibernate</h2>
+    <div class="two-col">
+      <div style="background-color: #f1f5f9; color: #0f172a; padding: 1.5rem; box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);">
+        <h4 style="color: #0284c7; margin-bottom: 0.5rem;">JPA</h4>
+        <p style="color: #475569; font-size: 0.9rem;">Specification/Interface</p>
+      </div>
+      <div style="background-color: #f1f5f9; color: #0f172a; padding: 1.5rem; box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);">
+        <h4 style="color: #0284c7; margin-bottom: 0.5rem;">Hibernate</h4>
+        <p style="color: #475569; font-size: 0.9rem;">Implementation of JPA</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Slide 32: Maven Dependencies -->
+  <section class="slide p-16 col" style="background-color: #ffffff; color: #0f172a;">
+    <h2 class="mb-4" style="color: #0284c7;">Maven Setup</h2>
+    <div class="code-block">
+&lt;dependency&gt;
+    &lt;groupId&gt;org.hibernate.orm&lt;/groupId&gt;
+    &lt;artifactId&gt;hibernate-core&lt;/artifactId&gt;
+    &lt;version&gt;6.4.0&lt;/version&gt;
+&lt;/dependency&gt;
+
+&lt;dependency&gt;
+    &lt;groupId&gt;mysql&lt;/groupId&gt;
+    &lt;artifactId&gt;mysql-connector-java&lt;/artifactId&gt;
+    &lt;version&gt;8.0.33&lt;/version&gt;
+&lt;/dependency&gt;
+    </div>
+  </section>
+
+  <!-- Slide 33: persistence.xml Configuration -->
+  <section class="slide p-16 col" style="background-color: #ffffff; color: #0f172a;">
+    <h2 class="mb-4" style="color: #0284c7;">Persistence Unit Config</h2>
+    <div class="code-block">
+&lt;persistence-unit name="myPU"&gt;
+    &lt;provider&gt;
+        org.hibernate.jpa.HibernateJpaProvider
+    &lt;/provider&gt;
+    &lt;properties&gt;
+        &lt;property name="jakarta.persistence.jdbc.url"
+            value="jdbc:mysql://localhost:3306/mydb"/&gt;
+        &lt;property name="hibernate.dialect"
+            value="org.hibernate.dialect.MySQL8Dialect"/&gt;
+    &lt;/properties&gt;
+&lt;/persistence-unit&gt;
+    </div>
+  </section>
+
+  <!-- Slide 34: EntityManagerFactory Setup -->
+  <section class="slide p-16 col" style="background-color: #ffffff; color: #0f172a;">
+    <h2 class="mb-4" style="color: #0284c7;">Create EntityManager</h2>
+    <div class="code-block">
+EntityManagerFactory emf = 
+    Persistence.createEntityManagerFactory(
+        "myPU");
+
+EntityManager em = emf.createEntityManager();
+
+// Use em for operations...
+
+em.close();
+emf.close();
+    </div>
+  </section>
+
+  <!-- Slide 35: Summary - Key Takeaways -->
+  <section class="slide p-16 col center" style="background-color: #0284c7; color: #ffffff;">
+    <h2 class="mb-8" style="color: #ffffff;">Key Takeaways</h2>
+    <ul class="text-lg" style="color: #ffffff; text-align: left;">
+      <li>JPA is ORM standard for Java persistence</li>
+      <li>Eliminates boilerplate JDBC code</li>
+      <li>Relationships and cascades simplify data operations</li>
+      <li>Always manage transactions properly</li>
+      <li>Understand entity lifecycle for efficiency</li>
+    </ul>
+  </section>
+
+  <!-- Slide 36: Thank You Slide -->
+  <section class="slide p-16 col center" style="background-color: #0284c7; color: #ffffff;">
+    <h2 class="text-5xl mb-6" style="color: #ffffff;">Thank You!</h2>
+    <p class="text-xl" style="color: #ffffff;">Questions?</p>
+    <p class="text-sm mt-8" style="color: #ffffff;">JPA Training Complete</p>
+  </section>
+
+</body>
+</html>
