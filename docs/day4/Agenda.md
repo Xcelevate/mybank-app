@@ -28,7 +28,7 @@
 #### 4. [Delete](https://www.tutorialspoint.com/jpa/delete_employee_example.htm)
 
 ## Excercise
-#### Create a java project, follow the instructions given in each of the below articles, create the codebase, make it work and observe program execution in debug mode(in IntelliJ).
+#### In your Intellj IDE, follow the instructions given in each of the below articles, create the codebase, make it work and observe the program execution in debug mode.
 
 #### 1. [One to One](https://www.baeldung.com/jpa-one-to-one)
 #### 2. [Many to Many](https://www.baeldung.com/jpa-many-to-many)
