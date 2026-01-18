@@ -12,8 +12,6 @@
 #### 9. [JPA Attribute Converters](https://www.baeldung.com/jpa-attribute-converters)
 #### 10. [Defining Unique Constraints in JPA](https://www.baeldung.com/jpa-unique-constraints)
 #### 11. [JPA Entities and Serializable Interface](https://www.baeldung.com/jpa-entities-serializable)
-#### 12. [Using Java Records with JPA](https://www.baeldung.com/spring-jpa-java-records)
-
 
 ## Entity Relationshipts
 #### 1. [One to One](https://www.baeldung.com/jpa-one-to-one)
@@ -30,4 +28,10 @@
 #### 4. [Delete](https://www.tutorialspoint.com/jpa/delete_employee_example.htm)
 
 ## Excercise
-#### Create a java project, follow the instructions given in each of the above articles, create the codebase, make it work and observe program execution in debug mode(in IntelliJ).
+#### Create a java project, follow the instructions given in each of the below articles, create the codebase, make it work and observe program execution in debug mode(in IntelliJ).
+
+#### 1. [One to One](https://www.baeldung.com/jpa-one-to-one)
+#### 2. [Many to Many](https://www.baeldung.com/jpa-many-to-many)
+#### 3. [@JoinColumn](https://www.baeldung.com/jpa-join-column)
+#### 4. [Difference Between @JoinColumn and mappedBy](https://www.baeldung.com/jpa-joincolumn-vs-mappedby)
+#### 5. [JPA Cascade Types](https://www.baeldung.com/jpa-cascade-types)
