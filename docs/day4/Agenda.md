@@ -7,7 +7,7 @@
 #### 4. [JPA @Basic Annotation](https://www.baeldung.com/jpa-basic-annotation)
 #### 5. [Mapping Entity class to tables](https://www.baeldung.com/jpa-entity-table-names)
 #### 6. [Difference between @Size, @Length @Column(length=value)](https://www.baeldung.com/jpa-size-length-column-differences)
-#### 7. [JPA Entity Equality](https://github.com/Xcelevate/mybank-app/blob/main/docs/day4/Agenda.md)
+#### 7. [JPA Entity Equality](https://www.baeldung.com/jpa-entity-equality)
 #### 8. [JPA @Embedded and @Embeddable](https://www.baeldung.com/jpa-embedded-embeddable)
 #### 9. [JPA Attribute Converters](https://www.baeldung.com/jpa-attribute-converters)
 #### 10. [Defining Unique Constraints in JPA](https://www.baeldung.com/jpa-unique-constraints)
