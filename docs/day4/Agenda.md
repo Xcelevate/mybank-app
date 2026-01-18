@@ -7,7 +7,7 @@
 #### 4. [JPA @Basic Annotation](https://www.baeldung.com/jpa-basic-annotation)
 #### 5. [Mapping Entity class to tables](https://www.baeldung.com/jpa-entity-table-names)
 #### 6. [Difference between @Size, @Length @Column(length=value)](https://www.baeldung.com/jpa-size-length-column-differences)
-#### 7. [JPA Entity Equality](https://www.baeldung.com/jpa-size-length-column-differences)
+#### 7. [JPA Entity Equality](https://github.com/Xcelevate/mybank-app/blob/main/docs/day4/Agenda.md)
 #### 8. [JPA @Embedded and @Embeddable](https://www.baeldung.com/jpa-embedded-embeddable)
 #### 9. [JPA Attribute Converters](https://www.baeldung.com/jpa-attribute-converters)
 #### 10. [Defining Unique Constraints in JPA](https://www.baeldung.com/jpa-unique-constraints)
@@ -29,3 +29,5 @@
 #### 3. [Find](https://www.tutorialspoint.com/jpa/find_employee_example.htm)
 #### 4. [Delete](https://www.tutorialspoint.com/jpa/delete_employee_example.htm)
 
+Excercise:
+1. In your Java project, follow the instructions given in the above articles, create the codebase, make it work and observe program execution in debug mode(in IntelliJ).
