@@ -29,5 +29,5 @@
 #### 3. [Find](https://www.tutorialspoint.com/jpa/find_employee_example.htm)
 #### 4. [Delete](https://www.tutorialspoint.com/jpa/delete_employee_example.htm)
 
-Excercise:
-1. In your Java project, follow the instructions given in the above articles, create the codebase, make it work and observe program execution in debug mode(in IntelliJ).
+## Excercise
+#### Create a java project, follow the instructions given in each of the above articles, create the codebase, make it work and observe program execution in debug mode(in IntelliJ).
