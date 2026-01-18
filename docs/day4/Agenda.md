@@ -11,7 +11,6 @@
 #### 8. [JPA @Embedded and @Embeddable](https://www.baeldung.com/jpa-embedded-embeddable)
 #### 9. [JPA Attribute Converters](https://www.baeldung.com/jpa-attribute-converters)
 #### 10. [Defining Unique Constraints in JPA](https://www.baeldung.com/jpa-unique-constraints)
-#### 11. [JPA Entities and Serializable Interface](https://www.baeldung.com/jpa-entities-serializable)
 
 ## Entity Relationshipts
 #### 1. [One to One](https://www.baeldung.com/jpa-one-to-one)
