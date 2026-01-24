@@ -1,10 +1,9 @@
-package com.training.mybank.config;
+package org.excelevate.milleniumbank.config;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class DatabaseConfig {
@@ -12,7 +11,7 @@ public class DatabaseConfig {
     private static final String USER = "postgres";
     private static final String PASS = "password";
     private static HikariDataSource dataSource;
-    {
+    static {
         HikariConfig config = new HikariConfig();
         config.setJdbcUrl("jdbc:postgresql://localhost:5432/mybankdb?currentSchema=mybank");
         config.setUsername("postgres");
